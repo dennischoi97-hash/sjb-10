@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><title>복지관 기여 방안 제안서 10</title>
+<style>
+  @font-face{
+    font-family:'SUIT';
+    src:url('fonts/SUIT-Variable.woff2') format('woff2-variations');
+    font-weight:100 900;
+    font-style:normal;
+  }
+  @font-face{
+    font-family:'Pretendard';
+    src:url('fonts/PretendardVariable.woff2') format('woff2-variations');
+    font-weight:45 920;
+    font-style:normal;
+  }
+  :root{
+    --ink:#101010;
+    --gray:#6f6f6f;
+    --lightgray:#b5b5b5;
+    --hair:#dcdcdc;
+    --paper:#ffffff;
+    --cream:#ffffff;
+    --gold:#0f5132;
+    --accent:#0f5132;
+    --danger:#c62828;
+    --accent-soft:#e8efe9;
+    --bg-soft:#f4f6f4;
+    --serif:'SUIT','Noto Sans CJK KR',sans-serif;      /* 제목·디스플레이용 */
+    --sans:'Pretendard','Noto Sans CJK KR',sans-serif; /* 본문·표·캡션용 */
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{background:#e9e9e9;}
+  body{
+    font-family:var(--sans);
+    color:var(--ink);
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+    word-break:keep-all;
+    line-height:1.62;
+  }
+  @page{size:A4;margin:0;}
+  .page{
+    width:210mm;height:297mm;
+    background:var(--paper);
+    position:relative;
+    overflow:hidden;
+    page-break-after:always;
+    padding:15mm 14mm 18mm 14mm;
+    display:flex;flex-direction:column;
+  }
+  .page:last-child{page-break-after:auto;}
+
+  /* ---------- running head / foot ---------- */
+  .runhead{
+    display:flex;justify-content:space-between;align-items:baseline;
+    font-size:6.6pt;letter-spacing:.14em;color:var(--gray);
+    text-transform:uppercase;
+    border-bottom:1px solid var(--ink);
+    padding-bottom:2.4mm;margin-bottom:7mm;
+    flex:0 0 auto;
+  }
+  .runhead .rh-l{font-weight:700;color:var(--ink);}
+  .runfoot{
+    position:absolute;left:14mm;right:14mm;bottom:9mm;
+    display:flex;justify-content:space-between;align-items:baseline;
+    font-size:6.6pt;letter-spacing:.12em;color:var(--gray);
+    border-top:1px solid var(--hair);padding-top:2.2mm;
+  }
+  .runfoot .pageno{font-weight:900;color:var(--ink);font-size:8pt;letter-spacing:0;}
+
+  /* ---------- typography ---------- */
+  .kicker{
+    font-size:7.5pt;font-weight:800;letter-spacing:.22em;color:var(--accent);
+    text-transform:uppercase;margin-bottom:2.5mm;
+  }
+  h2.sec-title{
+    font-family:var(--serif);
+    font-size:27pt;font-weight:900;line-height:1.24;letter-spacing:-.02em;
+    margin-bottom:4mm;
+  }
+  .sec-lede{
+    font-size:9.6pt;color:var(--gray);line-height:1.7;margin-bottom:6mm;
+  }
+  h3.sub{
+    font-family:var(--serif);
+    font-size:15.5pt;font-weight:900;letter-spacing:-.02em;
+    margin:6.5mm 0 3mm 0;
+    display:flex;align-items:baseline;gap:2.6mm;
+  }
+  h3.sub .no{
+    font-size:10.5pt;font-weight:900;color:var(--accent);letter-spacing:.03em;
+  }
+  p.body{font-size:9.6pt;line-height:1.72;margin-bottom:3mm;color:#1b1b1b;}
+  p.body b{color:var(--ink);}
+  .cols2{column-count:2;column-gap:8mm;column-rule:1px solid var(--hair);}
+  .avoid{break-inside:avoid;}
+
+  /* big section number */
+  .secnum-row{display:flex;align-items:flex-start;gap:6mm;margin-bottom:5mm;}
+  .secnum{
+    font-family:var(--serif);
+    font-size:52pt;font-weight:900;line-height:.9;letter-spacing:-.03em;
+    color:transparent;-webkit-text-stroke:1.1px var(--ink);
+    flex:0 0 auto;
+  }
+  .secnum.fill{color:var(--accent);-webkit-text-stroke:0;}
+
+  /* ---------- components ---------- */
+  .pull{
+    border-left:3px solid var(--accent);
+    background:var(--bg-soft);
+    padding:5mm 6mm;margin:4mm 0;
+  }
+  .pull .mark{font-family:var(--serif);font-size:17pt;font-weight:900;color:var(--accent);line-height:1;display:block;margin-bottom:1.5mm;}
+  .pull p{font-family:var(--serif);font-size:12.5pt;font-weight:800;line-height:1.6;letter-spacing:-.01em;}
+  .pull .cap{font-size:8pt;color:var(--gray);margin-top:2mm;letter-spacing:.04em;font-weight:400;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:4mm;}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4mm;}
+
+  .card{
+    border:1px solid var(--hair);padding:4mm 4.5mm;
+  }
+  .card .c-no{font-family:var(--serif);font-size:8.5pt;font-weight:900;color:var(--accent);letter-spacing:.08em;display:block;margin-bottom:1.4mm;}
+  .card .c-t{font-family:var(--serif);font-size:10.5pt;font-weight:900;margin-bottom:1.2mm;line-height:1.4;}
+  .card .c-d{font-size:8.7pt;color:#555;line-height:1.6;}
+
+  /* tables */
+  table.mag{
+    width:100%;border-collapse:collapse;margin:3mm 0 4mm 0;
+    font-size:9.2pt;line-height:1.6;
+  }
+  table.mag th{
+    text-align:left;font-size:7.6pt;font-weight:800;letter-spacing:.12em;
+    color:var(--gray);text-transform:uppercase;
+    border-top:2px solid var(--ink);border-bottom:1px solid var(--ink);
+    padding:2.2mm 2.5mm;
+  }
+  table.mag td{
+    border-bottom:1px solid var(--hair);
+    padding:2.4mm 2.5mm;vertical-align:top;color:#222;
+  }
+  /* 표가 많은 페이지에서 행 높이를 줄일 때 */
+  .page.tight table.mag th,
+  .page.tight table.mag td{padding:1.7mm 2.5mm;}
+  .page.tight table.mag{margin:2.5mm 0 3mm 0;}
+  table.mag td.strong{font-weight:800;color:var(--ink);white-space:nowrap;}
+  table.mag.risk td.strong{color:var(--danger);}
+  table.mag td.num{text-align:right;font-weight:800;}
+  table.mag tr.total td{border-top:1.5px solid var(--ink);border-bottom:none;font-weight:900;background:var(--accent-soft);}
+
+  /* checklist */
+  ul.no-list{list-style:none;}
+  ul.xlist li,ul.oklist li,ul.dotlist li{
+    list-style:none;position:relative;padding-left:6.5mm;
+    font-size:9.6pt;line-height:1.68;margin-bottom:2.4mm;color:#1b1b1b;
+  }
+  ul.xlist li::before{
+    content:"✕";position:absolute;left:0;top:0;
+    font-weight:900;color:var(--danger);font-size:8.5pt;
+  }
+  /* 부정형 카드 — 하지 않는 일 */
+  .card.neg{border-color:#f0c9c9;}
+  .card.neg .c-no{color:var(--danger);}
+  ul.oklist li::before{
+    content:"—";position:absolute;left:0;top:0;
+    font-weight:900;color:var(--accent);
+  }
+  ul.dotlist li{padding-left:5mm;}
+  ul.dotlist li::before{
+    content:"";position:absolute;left:0;top:.55em;
+    width:1.6mm;height:1.6mm;background:var(--accent);
+  }
+  ol.numlist{list-style:none;counter-reset:nl;}
+  ol.numlist li{
+    counter-increment:nl;position:relative;padding-left:8.5mm;
+    font-size:9.6pt;line-height:1.68;margin-bottom:2.4mm;color:#1b1b1b;
+  }
+  ol.numlist li::before{
+    content:counter(nl,decimal-leading-zero);
+    position:absolute;left:0;top:.1em;
+    font-size:8.2pt;font-weight:900;color:var(--accent);letter-spacing:.03em;
+  }
+
+  /* quote chips */
+  .chips{display:flex;flex-wrap:wrap;gap:2mm;margin:2.5mm 0 3.5mm 0;}
+  .chip{
+    font-size:8.8pt;border:1px solid var(--ink);padding:1.5mm 3.2mm;
+    border-radius:99px;font-weight:600;
+  }
+
+  /* flow */
+  .flow{margin:5mm 0;}
+  .flow-step{
+    display:flex;align-items:flex-start;gap:4mm;position:relative;
+    padding-bottom:5.5mm;
+  }
+  .flow-step:last-child{padding-bottom:0;}
+  .flow-step::before{
+    content:"";position:absolute;left:5.4mm;top:11mm;bottom:1mm;
+    width:1px;background:var(--ink);
+  }
+  .flow-step:last-child::before{display:none;}
+  .flow-no{
+    flex:0 0 11mm;height:11mm;border:1.4px solid var(--ink);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:9.5pt;font-weight:900;background:#fff;z-index:1;
+  }
+  .flow-step.acc .flow-no{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .flow-body .f-t{font-family:var(--serif);font-size:11pt;font-weight:900;line-height:1.3;padding-top:1mm;}
+  .flow-body .f-d{font-size:8.7pt;color:#555;line-height:1.6;margin-top:.8mm;}
+
+  /* stat bars for scoring */
+  .score-row{display:flex;align-items:center;gap:3mm;margin-bottom:2.6mm;}
+  .score-label{flex:0 0 52mm;font-size:9pt;font-weight:700;line-height:1.4;}
+  .score-bar{flex:1;height:4.5mm;background:#eef0ee;position:relative;}
+  .score-bar span{position:absolute;left:0;top:0;bottom:0;background:var(--accent);}
+  .score-val{flex:0 0 12mm;text-align:right;font-size:10pt;font-weight:900;}
+
+  .divider-label{
+    display:flex;align-items:center;gap:3mm;margin:6mm 0 3.2mm 0;
+  }
+  .divider-label .dl{
+    font-family:var(--serif);
+    font-size:12pt;font-weight:900;letter-spacing:-.01em;
+    color:var(--ink);white-space:nowrap;
+  }
+  .divider-label::after{content:"";flex:1;height:1.2px;background:var(--ink);}
+
+  .notebox{
+    border:1.4px solid var(--ink);padding:4.5mm 5.5mm;margin-top:4mm;
+    font-family:var(--serif);
+    font-size:10.5pt;line-height:1.68;color:var(--ink);font-weight:600;
+    background:#fff;
+  }
+  .notebox b{font-weight:900;color:var(--accent);}
+  /* 경고형 강조 박스 — 위험·한계 */
+  .notebox.warn{border-color:var(--danger);background:#fdf3f3;}
+  .notebox.warn b{color:var(--danger);}
+  .notebox.warn .nb-t{color:var(--danger);}
+  .notebox .nb-t{font-family:var(--sans);font-size:7.6pt;font-weight:900;letter-spacing:.18em;color:var(--accent);display:block;margin-bottom:1.8mm;text-transform:uppercase;}
+
+  /* 상태 뱃지 */
+  .badge{
+    display:inline-block;font-size:8pt;font-weight:800;
+    padding:.7mm 2.2mm;background:var(--accent-soft);color:var(--accent);
+    letter-spacing:-.01em;
+  }
+  .badge.red{background:#fdeaea;color:var(--danger);}
+  .badge.gray{background:#eeeeee;color:#444;}
+
+  /* 가로 흐름도 */
+  .hchain{display:flex;align-items:stretch;margin:3.5mm 0 4mm 0;}
+  .hchain .hc{
+    flex:1;border:1.2px solid var(--ink);padding:3mm 1.5mm;text-align:center;
+    font-family:var(--serif);font-weight:800;font-size:9.2pt;line-height:1.35;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .hchain .hc.acc{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .hchain .harrow{
+    display:flex;align-items:center;padding:0 1.8mm;
+    font-weight:900;color:var(--accent);font-size:10pt;
+  }
+
+  /* 합류형 흐름도 */
+  .dgm{display:flex;align-items:center;gap:0;margin:3.5mm 0;}
+  .dgm-in{flex:1.15;display:flex;flex-direction:column;gap:2.5mm;}
+  .dgm-box{
+    border:1.2px solid var(--ink);padding:3mm 3.5mm;text-align:center;
+    font-family:var(--serif);font-weight:800;font-size:9.2pt;line-height:1.35;
+  }
+  .dgm-box.acc{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .dgm-arrow{padding:0 2.5mm;font-weight:900;color:var(--accent);font-size:11pt;}
+  .dgm-out{flex:1;}
+
+  /* 프롬프트·코드 블록 */
+  pre.code{
+    font-family:'Noto Sans Mono CJK KR',monospace;
+    font-size:6.9pt;line-height:1.62;
+    background:var(--bg-soft);
+    border-left:2.5px solid var(--accent);
+    padding:4mm 5mm;
+    white-space:pre-wrap;overflow-wrap:anywhere;
+    color:#1b1b1b;
+  }
+  pre.code b{font-weight:700;color:var(--accent);}
+
+  /* 참고문헌 */
+  ol.refs{list-style:none;counter-reset:rf;}
+  ol.refs li{
+    counter-increment:rf;position:relative;padding-left:8.5mm;
+    font-size:8.8pt;line-height:1.62;margin-bottom:2.6mm;color:#1b1b1b;
+  }
+  ol.refs li::before{
+    content:counter(rf,decimal-leading-zero);
+    position:absolute;left:0;top:.15em;
+    font-size:7.6pt;font-weight:900;color:var(--accent);
+  }
+  ol.refs .url{display:block;font-size:7.4pt;color:var(--gray);word-break:break-all;margin-top:.6mm;}
+
+  .spacer{flex:1 1 auto;}
+
+  /* ============ COVER ============ */
+  .cover{padding:15mm 14mm 16mm 14mm;}
+  .cover-top{
+    display:flex;justify-content:space-between;align-items:baseline;
+    border-bottom:2px solid var(--ink);padding-bottom:3mm;
+    font-size:7.5pt;letter-spacing:.18em;font-weight:700;text-transform:uppercase;
+  }
+  .cover-issue{
+    font-family:var(--serif);
+    font-size:40pt;font-weight:900;letter-spacing:-.02em;line-height:1;
+    color:var(--accent);
+  }
+  .cover-mid{margin-top:14mm;}
+  .cover-cat{font-size:9pt;font-weight:800;letter-spacing:.3em;color:var(--gray);margin-bottom:6mm;}
+  .cover-title{
+    font-family:var(--serif);
+    font-size:46pt;font-weight:900;line-height:1.14;letter-spacing:-.035em;
+  }
+  .cover-title .thin{font-weight:250;}
+  .cover-title .acc{color:var(--accent);}
+  .cover-sub{
+    margin-top:7mm;font-size:11pt;font-weight:500;color:#333;line-height:1.7;
+    max-width:130mm;
+  }
+  .cover-toc{margin-top:10mm;border-top:1px solid var(--ink);}
+  .cover-toc .toc-row{
+    display:flex;align-items:baseline;gap:4mm;
+    border-bottom:1px solid var(--hair);padding:2.1mm 0;
+    font-size:8.6pt;
+  }
+  .cover-toc .toc-no{flex:0 0 10mm;font-family:var(--serif);font-weight:900;color:var(--accent);font-size:8pt;letter-spacing:.04em;}
+  .cover-toc .toc-t{font-weight:600;}
+  .cover-toc .toc-dots{flex:1;border-bottom:1px dotted var(--lightgray);transform:translateY(-2px);}
+  .cover-toc .toc-p{font-weight:800;font-size:8pt;}
+  .cover-note{
+    margin-top:auto;
+    border:1.4px solid var(--ink);padding:5mm 6mm;
+    font-size:9.2pt;line-height:1.72;color:#1b1b1b;
+  }
+  .cover-note b{color:var(--accent);}
+  .cover-foot{
+    margin-top:5mm;display:flex;justify-content:space-between;
+    font-size:7.5pt;letter-spacing:.14em;color:var(--gray);text-transform:uppercase;
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= PAGE 1 : COVER ================= -->
+<section class="page cover">
+  <div class="cover-top">
+    <span>복지관 기여 방안 제안서</span>
+    <span>PROPOSAL FOR COMMUNITY WELFARE CENTER</span>
+    <span class="cover-issue">10</span>
+  </div>
+  <div class="cover-mid">
+    <div class="cover-cat">AAC FOR COMMUNICATION SUPPORT</div>
+    <h1 class="cover-title">
+      <span class="thin">뇌병변장애인을 위한</span><br>
+      개인맞춤형<br>
+      의사소통 AAC 웹앱<span class="acc">.</span>
+    </h1>
+    <p class="cover-sub">
+      이용인이 큰 버튼이나 그림을 직접 선택하여 자신의 의사를 문장과 음성으로
+      표현할 수 있는 보완대체의사소통 웹앱 시연 제안입니다.
+    </p>
+  </div>
+  <div class="cover-toc">
+    <div class="toc-row"><span class="toc-no">Ⅰ·Ⅱ</span><span class="toc-t">관장님께 드리는 요약, 제안 배경</span><span class="toc-dots"></span><span class="toc-p">02</span></div>
+    <div class="toc-row"><span class="toc-no">Ⅲ</span><span class="toc-t">단계별 개발 범위</span><span class="toc-dots"></span><span class="toc-p">04</span></div>
+    <div class="toc-row"><span class="toc-no">Ⅳ</span><span class="toc-t">웹앱 화면 구성</span><span class="toc-dots"></span><span class="toc-p">09</span></div>
+    <div class="toc-row"><span class="toc-no">Ⅴ</span><span class="toc-t">접근성 설계 원칙</span><span class="toc-dots"></span><span class="toc-p">11</span></div>
+    <div class="toc-row"><span class="toc-no">Ⅵ</span><span class="toc-t">기대하는 도움</span><span class="toc-dots"></span><span class="toc-p">13</span></div>
+    <div class="toc-row"><span class="toc-no">Ⅶ</span><span class="toc-t">법적·윤리적·안전상 위험과 예방 방안</span><span class="toc-dots"></span><span class="toc-p">14</span></div>
+  </div>
+  <div class="cover-note">
+    <b>미리 말씀드립니다.</b>&nbsp; 본 제안은 복지관에 별도의 사업 추진, 예산 편성, 개발인력, 장비,
+    유료서비스 또는 실제 이용인 자료의 제공을 요청하는 내용이 아닙니다. 제안자가
+    <b>가상의 이용인과 가상 표현자료를 사용하여</b> 웹앱을 개인적으로 제작하고 그 가능성을
+    시연하고자 하는 내용입니다. 실제 이용인에게 적용하거나 개인정보를 등록하는 것은 시연 결과와
+    별개의 후속 판단이며, 복지관의 추가 허락 없이 진행하지 않습니다.
+  </div>
+  <div class="cover-foot">
+    <span>2026. 08</span>
+    <span>PROPOSAL 10 — DEMO PERMISSION REQUEST</span>
+  </div>
+</section>
+
+<!-- ================= PAGE 2 : Ⅰ ================= -->
+<section class="page">
+  <div class="runhead"><span class="rh-l">Ⅰ. 관장님께 드리는 요약</span><span>AAC WEB APP — PROPOSAL 10</span></div>
+  <div class="secnum-row">
+    <div class="secnum">Ⅰ</div>
+    <div>
+      <div class="kicker">Summary for the Director</div>
+      <h2 class="sec-title">관장님께 드리는 요약</h2>
+    </div>
+  </div>
+
+  <h3 class="sub"><span class="no">01</span>무엇을 만들려는 것인가</h3>
+  <p class="body">
+    말로 의사를 표현하기 어렵거나 발음이 상대방에게 명확하게 전달되지 않는 뇌병변장애인은 일상적인
+    욕구, 선택, 거부 및 도움 요청을 전달하는 데 어려움을 겪을 수 있습니다. 상대방이 반복해서
+    질문하거나 의미를 추측하는 과정에서는 시간이 오래 걸릴 뿐 아니라
+    <b>이용인의 실제 의도가 다르게 전달될 가능성</b>도 있습니다.
+  </p>
+  <p class="body">
+    본 제안은 이용인이 화면의 <b>큰 버튼이나 그림을 직접 선택하여 자신의 의사를 문장과 음성으로
+    표현</b>할 수 있는 웹앱을 제작하는 내용입니다. 개발 범위는 다음 두 단계로 제한합니다.
+  </p>
+
+  <div class="grid2" style="margin:3.5mm 0 4mm 0;">
+    <div class="card">
+      <span class="c-no">1단계</span>
+      <div class="c-t">버튼형 기본 의사표시</div>
+      <div class="c-d">정해진 버튼을 눌러 기본적인 의사를 문장과 음성으로 표현합니다.</div>
+    </div>
+    <div class="card">
+      <span class="c-no">2단계</span>
+      <div class="c-t">개인맞춤형 의사소통판</div>
+      <div class="c-d">이용인마다 필요한 표현, 관심 프로그램, 화면구성, 글자·버튼 크기, 음성속도 및 입력방식을 다르게 설정할 수 있게 합니다.</div>
+    </div>
+  </div>
+
+  <div class="notebox warn avoid">
+    <span class="nb-t">범위에 포함하지 않는 기능</span>
+    <b>개인별 음성을 인식하거나 자유로운 발화를 실시간으로 통역하는 기능은 포함하지 않습니다.</b>
+    한국어 비정형 발화자료의 부족, 이용인별 발화 차이 및 오인식에 따른 의사 왜곡 가능성으로 인해
+    현재 단계에서 개인이 안정적으로 구현하기 어렵기 때문입니다.
+  </div>
+
+  <h3 class="sub"><span class="no">02</span>복지관에 요청드리는 사항</h3>
+  <p class="body">
+    예산, 인력, 실제 이용인 정보, 음성자료 또는 기존 시스템 접근권한을 <b>요청드리지 않습니다.</b>
+    다음 사항만 허락해 주시기를 요청드립니다.
+  </p>
+  <ol class="numlist" style="margin-top:2mm;">
+    <li>제안자가 가상의 이용인과 가상 표현자료를 사용하여 웹앱을 개인적으로 제작하는 것</li>
+    <li>버튼형 기본 의사표시와 개인맞춤형 표현판을 시연하는 것</li>
+    <li>제작된 시연물을 관장님과 희망하는 직원에게 보여드리는 것</li>
+  </ol>
+
+  <div class="spacer"></div>
+  <div class="runfoot"><span>복지관 기여 방안 제안서 10 — 뇌병변장애인 AAC 웹앱</span><span class="pageno">02</span></div>
+</section>
+
+<!-- ================= PAGE 3 : Ⅱ ================= -->
+<section class="page">
+  <div class="runhead"><span class="rh-l">Ⅱ. 제안 배경</span><span>AAC WEB APP — PROPOSAL 10</span></div>
+  <div class="secnum-row">
+    <div class="secnum">Ⅱ</div>
+    <div>
+      <div class="kicker">Background</div>
+      <h2 class="sec-title">제안 배경</h2>
+    </div>
+  </div>
+
+  <h3 class="sub"><span class="no">01</span>말할 수 있는 것과 의사가 전달되는 것은 다름</h3>
+  <p class="body">
+    뇌병변장애인은 개인에 따라 운동기능, 발화, 시각, 인지 및 언어능력에 서로 다른 특성을 가질 수
+    있습니다. 어떤 이용인은 하고 싶은 말이 분명하지만 발음이 불명확할 수 있고, 어떤 이용인은
+    짧은 말·표정·시선·손동작 등을 함께 사용하여 의사를 표현할 수 있습니다. 이때 의사소통이 원활하지
+    않으면 다음과 같은 상황이 발생할 수 있습니다.
+  </p>
+  <div class="cols2" style="margin:3mm 0 4mm 0;">
+    <ul class="xlist">
+      <li>같은 말을 여러 번 반복해야 함</li>
+      <li>상대방이 이용인의 의도를 추측함</li>
+      <li>이용인이 원하는 것과 다른 선택이 이루어짐</li>
+      <li>거부나 중단 의사가 늦게 전달됨</li>
+    </ul>
+    <ul class="xlist">
+      <li>통증이나 불편을 표현하기 어려움</li>
+      <li>프로그램·식사·운동 등에서 선택권이 제한됨</li>
+      <li>의사소통 실패가 이용인의 문제행동이나 비협조로 오해됨</li>
+      <li>낯선 직원과 대화할 때 기존의 의사소통 방식이 이어지지 않음</li>
+    </ul>
+  </div>
+
+  <div class="notebox avoid">
+    <span class="nb-t">Core Idea</span>
+    핵심은 이용인이 <b>자신의 의사를 직접 선택하고 확인하여 상대방에게 전달할 수 있는 수단</b>을
+    제공하는 것입니다.
+  </div>
+
+  <h3 class="sub"><span class="no">02</span>AAC의 의미</h3>
+  <p class="body">
+    AAC는 <b>보완대체의사소통</b>을 뜻합니다. 말, 몸짓, 그림, 글자, 의사소통판, 태블릿 및
+    음성출력기기 등을 이용하여 기존의 의사소통을 보완하거나 대신하는 방식입니다.
+    본 웹앱은 다음 역할을 합니다.
+  </p>
+  <ul class="oklist" style="margin-top:2mm;">
+    <li>이용인이 선택한 그림·단어·문장을 화면에 크게 표시함</li>
+    <li>선택한 문장을 기기의 음성으로 읽어 줌</li>
+    <li>자주 사용하는 표현을 빠르게 찾게 함</li>
+    <li>손으로 정확히 누르기 어려운 경우 버튼 크기와 입력방식을 조정함</li>
+    <li>종이 의사소통판과 함께 사용할 수 있는 전자식 표현판을 제공함</li>
+  </ul>
+
+  <div class="notebox warn avoid">
+    <span class="nb-t">이 웹앱이 아닌 것</span>
+    본 웹앱은 <b>이용인의 발화를 교정하거나 치료하는 의료도구가 아닙니다.</b> 또한
+    <b>이용인의 의사를 AI가 추측하여 대신 결정하는 도구도 아닙니다.</b>
+  </div>
+
+  <div class="spacer"></div>
+  <div class="runfoot"><span>복지관 기여 방안 제안서 10 — 뇌병변장애인 AAC 웹앱</span><span class="pageno">03</span></div>
+</section>
+
+<!-- ================= PAGE 4 : Ⅲ opener + 단계표 ================= -->
+<section class="page">
+  <div class="runhead"><span class="rh-l">Ⅲ. 단계별 개발 범위</span><span>AAC WEB APP — PROPOSAL 10</span></div>
+  <div class="secnum-row">
+    <div class="secnum">Ⅲ</div>
+    <div>
+      <div class="kicker">Development Scope</div>
+      <h2 class="sec-title">단계별 개발 범위</h2>
+    </div>
+  </div>
+
+  <table class="mag">
+    <tr><th style="width:12%;">단계</th><th style="width:56%;">핵심 기능</th><th>본 제안에서의 위치</th></tr>
+    <tr><td class="strong">1단계</td><td>버튼으로 의사를 표현함</td><td><span class="badge">구현 범위</span></td></tr>
+    <tr><td class="strong">2단계</td><td>이용인별 표현·관심 프로그램·화면·음성·입력방식 맞춤설정</td><td><span class="badge">구현 범위</span></td></tr>
+    <tr><td class="strong">3단계</td><td>사전에 등록한 개인 발화를 인식하여 후보 제시</td><td><span class="badge red">구현하지 않음</span></td></tr>
+    <tr><td class="strong">4단계</td><td>등록되지 않은 발화의 의미를 추정하여 후보 제시</td><td><span class="badge red">구현하지 않음</span></td></tr>
+    <tr><td class="strong">5단계</td><td>자유로운 발화를 실시간으로 통역</td><td><span class="badge red">구현하지 않음</span></td></tr>
+  </table>
+
+  <h3 class="sub"><span class="no">01</span>1단계 — 버튼형 기본 의사표시</h3>
+  <p class="body">
+    첫 화면에 <b>크고 명확한 의사표현 버튼</b>을 배치합니다. 이용인이 버튼을 누르면 해당 문장이
+    큰 글씨로 표시되고 음성으로 출력됩니다.
+  </p>
+
+  <div class="divider-label"><span class="dl">기본 표현</span></div>
+  <div class="chips">
+    <span class="chip">예</span><span class="chip">아니요</span><span class="chip">잘 모르겠어요</span>
+    <span class="chip">좋아요</span><span class="chip">싫어요</span><span class="chip">그만해주세요</span>
+    <span class="chip">다시 설명해주세요</span><span class="chip">제가 직접 선택하고 싶어요</span>
+  </div>
+
+  <div class="divider-label"><span class="dl">일상생활</span></div>
+  <div class="chips">
+    <span class="chip">물이 필요해요</span><span class="chip">식사하고 싶어요</span>
+    <span class="chip">화장실에 가고 싶어요</span><span class="chip">잠시 쉬고 싶어요</span>
+    <span class="chip">덥습니다</span><span class="chip">춥습니다</span>
+    <span class="chip">신문 가져다 주세요</span><span class="chip">커피 먹고 싶어요</span>
+  </div>
+
+  <div class="spacer"></div>
+  <div class="runfoot"><span>복지관 기여 방안 제안서 10 — 뇌병변장애인 AAC 웹앱</span><span class="pageno">04</span></div>
+</section>
+
+<!-- ================= PAGE 5 : Ⅲ-1 계속 ================= -->
+<section class="page">
+  <div class="runhead"><span class="rh-l">Ⅲ. 단계별 개발 범위</span><span>AAC WEB APP — PROPOSAL 10</span></div>
+
+  <div class="divider-label" style="margin-top:0;"><span class="dl">도움과 안전</span></div>
+  <div class="chips">
+    <span class="chip">도움이 필요해요</span><span class="chip">아파요</span><span class="chip">불편해요</span>
+    <span class="chip">숨이 차요</span><span class="chip">어지러워요</span>
+    <span class="chip">천천히 해주세요</span><span class="chip">지금 중단해주세요</span>
+  </div>
+
+  <div class="divider-label"><span class="dl">복지관 생활</span></div>
+  <div class="chips">
+    <span class="chip">프로그램에 참여하고 싶어요</span><span class="chip">오늘은 참여하고 싶지 않아요</span>
+    <span class="chip">다른 활동을 하고 싶어요</span><span class="chip">운동을 계속하고 싶어요</span>
+    <span class="chip">운동을 중단하고 싶어요</span><span class="chip">담당자를 불러주세요</span>
+  </div>
+
+  <div class="divider-label"><span class="dl">버튼 선택 후 작동</span></div>
+  <div class="flow" style="margin-top:3mm;">
+    <div class="flow-step acc"><div class="flow-no">1</div><div class="flow-body"><div class="f-t">이용인이 표현 버튼을 선택합니다.</div></div></div>
+    <div class="flow-step"><div class="flow-no">2</div><div class="flow-body"><div class="f-t">화면 상단에 선택한 문장이 크게 표시됩니다.</div></div></div>
+    <div class="flow-step"><div class="flow-no">3</div><div class="flow-body"><div class="f-t">필요한 경우 〈이 문장이 맞습니까?〉 확인화면을 표시합니다.</div></div></div>
+    <div class="flow-step"><div class="flow-no">4</div><div class="flow-body"><div class="f-t">이용인이 확정하면 문장을 음성으로 출력합니다.</div></div></div>
+    <div class="flow-step acc"><div class="flow-no">5</div><div class="flow-body"><div class="f-t">〈다시 듣기〉, 〈취소〉, 〈처음으로〉 버튼을 제공합니다.</div></div></div>
+  </div>
+
+  <div class="notebox avoid">
+    <span class="nb-t">긴급표현의 배치</span>
+    긴급하거나 중요한 의사표현은 <b>오작동을 줄이면서도 빠르게 사용할 수 있도록 별도 영역</b>에 둡니다.
+  </div>
+
+  <div class="spacer"></div>
+  <div class="runfoot"><span>복지관 기여 방안 제안서 10 — 뇌병변장애인 AAC 웹앱</span><span class="pageno">05</span></div>
+</section>
+
+<!-- ================= PAGE 6 : Ⅲ-2 (1) ================= -->
+<section class="page">
+  <div class="runhead"><span class="rh-l">Ⅲ. 단계별 개발 범위</span><span>AAC WEB APP — PROPOSAL 10</span></div>
+
+  <h3 class="sub" style="margin-top:0;"><span class="no">02</span>2단계 — 개인맞춤형 의사소통판</h3>
+  <p class="body">
+    모든 뇌병변장애인에게 같은 버튼과 화면을 제공하지 않습니다. 이용인의 생활, 관심사, 신체기능 및
+    의사소통 방식에 따라 <b>필요한 내용을 다르게 설정</b>합니다.
+  </p>
+
+  <div class="grid2" style="gap:5mm 7mm;margin-top:4mm;">
+    <div>
+      <div class="divider-label" style="margin-top:0;"><span class="dl">개인별 표현 등록</span></div>
+      <ul class="dotlist">
+        <li>자주 만나는 가족·직원 이름</li>
+        <li>자주 가는 장소</li>
+        <li>좋아하는 음식과 활동</li>
+        <li>참여하는 프로그램</li>
+        <li>자주 표현하는 요구와 질문</li>
+        <li>자신을 소개하는 문장</li>
+        <li>상대방에게 의사소통 방법을 알려주는 문장</li>
+        <li>개인이 중요하게 생각하는 거부·선택 표현</li>
+      </ul>
+    </div>
+    <div>
+      <div class="divider-label" style="margin-top:0;"><span class="dl">화면 맞춤설정</span></div>
+      <ul class="dotlist">
+        <li>한 화면에 표시할 버튼 수</li>
+        <li>버튼의 크기와 간격</li>
+        <li>글자 크기</li>
+        <li>글자와 배경의 대비</li>
+        <li>그림·사진·글자 중 표시방법</li>
+        <li>자주 쓰는 표현의 위치</li>
+        <li>첫 화면에 고정할 표현</li>
+        <li>화면 전환의 단계 수</li>
+        <li>음성 출력 속도와 음량</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider-label"><span class="dl">입력방식 맞춤설정</span></div>
+  <div class="cols2" style="margin-top:2mm;">
+    <ul class="dotlist">
+      <li>직접 터치</li>
+      <li>마우스 또는 터치패드</li>
+      <li>키보드 방향키와 확인키</li>
+    </ul>
+    <ul class="dotlist">
+      <li>일정 시간 누르고 있어야 선택되는 방식</li>
+      <li>한 번 선택한 뒤 다시 확인하는 방식</li>
+      <li>항목이 차례로 강조되면 원하는 순간에 확인키를 누르는 스캔 방식</li>
+    </ul>
+  </div>
+
+  <p class="body" style="color:var(--gray);font-size:8.8pt;">
+    ※ 시선입력기나 외부 스위치와의 직접 연동은 기기별 호환성 검토가 필요하므로 시연판에서는
+    키보드 기반의 스캔 방식으로 원리를 보여줍니다.
+  </p>
+
+  <div class="spacer"></div>
+  <div class="runfoot"><span>복지관 기여 방안 제안서 10 — 뇌병변장애인 AAC 웹앱</span><span class="pageno">06</span></div>
+</section>
+
+<!-- ================= PAGE 7 : 문장 만들기 ================= -->
+<section class="page">
+  <div class="runhead"><span class="rh-l">Ⅲ. 단계별 개발 범위</span><span>AAC WEB APP — PROPOSAL 10</span></div>
+
+  <div class="divider-label" style="margin-top:0;"><span class="dl">문장 만들기</span></div>
+  <p class="body">
+    이용인은 단어 또는 짧은 표현을 <b>순서대로 선택하여 새로운 문장</b>을 만들 수 있습니다.
+    예시는 다음과 같습니다.
+  </p>
+
+  <div class="hchain" style="margin-top:4mm;">
+    <div class="hc"><div>저는</div></div><div class="harrow">+</div>
+    <div class="hc"><div>오늘</div></div><div class="harrow">+</div>
+    <div class="hc"><div>헬스장에</div></div><div class="harrow">+</div>
+    <div class="hc acc"><div>가고 싶어요</div></div>
+  </div>
+  <div class="hchain">
+    <div class="hc"><div>지금</div></div><div class="harrow">+</div>
+    <div class="hc"><div>오른쪽 어깨가</div></div><div class="harrow">+</div>
+    <div class="hc acc"><div>아파요</div></div>
+  </div>
+  <div class="hchain">
+    <div class="hc"><div>설명을</div></div><div class="harrow">+</div>
+    <div class="hc"><div>천천히</div></div><div class="harrow">+</div>
+    <div class="hc acc"><div>다시 해주세요</div></div>
+  </div>
+
+  <div class="notebox avoid">
+    <span class="nb-t">확인 후에만 출력합니다</span>
+    완성된 문장은 <b>이용인이 직접 확인한 후에만</b> 상대방용 큰 화면과 음성으로 출력합니다.
+  </div>
+
+  <div class="spacer"></div>
+
+  <div style="border-top:1px solid var(--ink);padding-top:5mm;">
+    <div style="font-size:7pt;letter-spacing:.22em;font-weight:900;color:var(--gray);text-transform:uppercase;margin-bottom:2.5mm;">다음 쪽</div>
+    <div style="font-family:var(--serif);font-size:15pt;font-weight:900;letter-spacing:-.02em;line-height:1.4;">
+      3단계 이상을 구현하지 않는 이유를<br>구체적으로 말씀드립니다<span style="color:var(--accent);">.</span>
+    </div>
+  </div>
+  <div class="runfoot"><span>복지관 기여 방안 제안서 10 — 뇌병변장애인 AAC 웹앱</span><span class="pageno">07</span></div>
+</section>
+
+<!-- ================= PAGE 8 : Ⅲ-3 ================= -->
+<section class="page">
+  <div class="runhead"><span class="rh-l">Ⅲ. 단계별 개발 범위</span><span>AAC WEB APP — PROPOSAL 10</span></div>
+
+  <h3 class="sub" style="margin-top:0;"><span class="no">03</span>3단계 이상을 구현하지 않는 이유</h3>
+  <p class="body">
+    3단계 이상은 이용인의 <b>개인 발화를 녹음하고 인식하여 의미를 추정</b>해야 합니다.
+    현재 다음과 같은 한계가 있습니다.
+  </p>
+
+  <div class="grid2" style="margin:3.5mm 0 4mm 0;">
+    <div class="card neg"><span class="c-no">✕ 01</span><div class="c-t">발화 특성의 개인차</div><div class="c-d">뇌병변장애인의 발화 특성이 사람마다 크게 다를 수 있습니다.</div></div>
+    <div class="card neg"><span class="c-no">✕ 02</span><div class="c-t">비정형 발화의 인식률</div><div class="c-d">일반 음성인식이 비정형 발화를 정확히 인식하지 못할 수 있습니다.</div></div>
+    <div class="card neg"><span class="c-no">✕ 03</span><div class="c-t">학습자료의 제한</div><div class="c-d">한국어 비정형 발화 학습자료가 제한적입니다.</div></div>
+    <div class="card neg"><span class="c-no">✕ 04</span><div class="c-t">오류의 은폐</div><div class="c-d">인식 오류가 자연스러운 문장으로 바뀌면 이용인의 실제 의도처럼 보일 수 있습니다.</div></div>
+    <div class="card neg"><span class="c-no">✕ 05</span><div class="c-t">음성의 민감정보</div><div class="c-d">음성에는 개인식별정보와 건강상태가 드러날 가능성이 있습니다.</div></div>
+    <div class="card neg"><span class="c-no">✕ 06</span><div class="c-t">의사 왜곡의 위험</div><div class="c-d">충분한 검증 없이 실제 대화에 사용하면 선택·거부·도움 요청이 잘못 전달될 수 있습니다.</div></div>
+  </div>
+
+  <div class="notebox avoid">
+    <span class="nb-t">장기 검토과제로 구분</span>
+    따라서 본 제안은 현재 개인이 <b>안전하게 시연할 수 있는 1·2단계까지만</b> 구현합니다.
+    3단계 이상은 기술 발전, 이용인 참여연구, 충분한 음성자료, 개인정보 보호체계 및 전문가 검토가
+    확보된 이후의 <b>장기 검토과제</b>로 구분합니다.
+  </div>
+
+  <div class="spacer"></div>
+  <div class="runfoot"><span>복지관 기여 방안 제안서 10 — 뇌병변장애인 AAC 웹앱</span><span class="pageno">08</span></div>
+</section>
+
+<!-- ================= PAGE 9 : Ⅳ-1,2,3 ================= -->
+<section class="page">
+  <div class="runhead"><span class="rh-l">Ⅳ. 웹앱 화면 구성</span><span>AAC WEB APP — PROPOSAL 10</span></div>
+  <div class="secnum-row">
+    <div class="secnum">Ⅳ</div>
+    <div>
+      <div class="kicker">Screen Design</div>
+      <h2 class="sec-title">웹앱 화면 구성</h2>
+    </div>
+  </div>
+
+  <h3 class="sub"><span class="no">01</span>이용인용 첫 화면</h3>
+  <p class="body">이용인이 가장 자주 사용하는 기능만 보여줍니다.</p>
+  <div class="chips">
+    <span class="chip">말하기</span><span class="chip">빠른 표현</span><span class="chip">문장 만들기</span>
+    <span class="chip">도움 요청</span><span class="chip">내 소개</span>
+  </div>
+  <p class="body">
+    화면 상단에는 현재 선택한 문장을 표시하고, 하단에는
+    <b>〈말하기〉, 〈지우기〉, 〈한 단계 취소〉</b>를 고정합니다.
+  </p>
+
+  <h3 class="sub"><span class="no">02</span>빠른 표현 화면</h3>
+  <p class="body">상황별로 표현을 나누되 화면 이동을 지나치게 복잡하게 만들지 않습니다.</p>
+  <table class="mag">
+    <tr><th style="width:20%;">영역</th><th>표현 예시</th></tr>
+    <tr><td class="strong">기본응답</td><td>예, 아니요, 잘 모르겠어요, 다시 물어봐주세요</td></tr>
+    <tr><td class="strong">감정·선호</td><td>좋아요, 싫어요, 불안해요, 즐거워요</td></tr>
+    <tr><td class="strong">일상생활</td><td>물, 식사, 화장실, 휴식</td></tr>
+    <tr><td class="strong">프로그램</td><td>참여, 불참, 변경, 휴식, 설명 요청</td></tr>
+    <tr><td class="strong">헬스장</td><td>시작, 계속, 중단, 강도 조절, 통증</td></tr>
+    <tr><td class="strong" style="color:var(--danger);">도움·안전</td><td>도와주세요, 아파요, 숨이 차요</td></tr>
+  </table>
+
+  <h3 class="sub"><span class="no">03</span>문장 만들기 화면</h3>
+  <ul class="dotlist" style="margin-top:2mm;">
+    <li>주어·시간·장소·행동·감정 등으로 표현을 구분합니다.</li>
+    <li>선택한 단어를 화면 위쪽의 문장칸에 순서대로 쌓습니다.</li>
+    <li>순서를 바꾸거나 한 단어만 삭제할 수 있습니다.</li>
+    <li>완성된 문장은 크게 보기와 음성 출력이 가능합니다.</li>
+    <li>이용인의 언어능력에 따라 단어 대신 완성문장 중심으로 구성할 수 있습니다.</li>
+  </ul>
+
+  <div class="spacer"></div>
+  <div class="runfoot"><span>복지관 기여 방안 제안서 10 — 뇌병변장애인 AAC 웹앱</span><span class="pageno">09</span></div>
+</section>
+
+<!-- ================= PAGE 10 : Ⅳ-4,5 ================= -->
+<section class="page">
+  <div class="runhead"><span class="rh-l">Ⅳ. 웹앱 화면 구성</span><span>AAC WEB APP — PROPOSAL 10</span></div>
+
+  <h3 class="sub" style="margin-top:0;"><span class="no">04</span>상대방에게 보여주는 화면</h3>
+  <p class="body">이용인이 확정한 문장을 화면 전체에 <b>큰 글씨</b>로 표시합니다.</p>
+  <div class="cols2" style="margin:2mm 0 3mm 0;">
+    <ul class="dotlist">
+      <li>확정된 문장</li>
+      <li>음성으로 다시 듣기</li>
+      <li>〈맞아요〉와 〈수정할게요〉</li>
+    </ul>
+    <ul class="dotlist">
+      <li>〈잠시 기다려주세요〉</li>
+      <li>이용인이 정한 의사소통 안내문</li>
+    </ul>
+  </div>
+
+  <div class="notebox warn avoid">
+    <span class="nb-t">확정은 이용인이 합니다</span>
+    상대방은 이 화면을 보고 이용인의 의사를 확인하지만,
+    <b>이용인 대신 문장을 확정하지 않습니다.</b>
+  </div>
+
+  <h3 class="sub"><span class="no">05</span>설정 화면</h3>
+  <p class="body">설정 화면은 <b>이용화면과 분리</b>합니다.</p>
+  <div class="cols2" style="margin:2mm 0 3mm 0;">
+    <ul class="dotlist">
+      <li>가상 이용인 프로필 선택</li>
+      <li>표현 추가·수정·삭제</li>
+      <li>표현의 위치 변경</li>
+      <li>버튼 크기와 화면 밀도 설정</li>
+      <li>고대비 모드</li>
+    </ul>
+    <ul class="dotlist">
+      <li>확인방식과 누르기 유지시간 설정</li>
+      <li>음성 속도·음량 설정</li>
+      <li>데이터 내보내기·가져오기</li>
+      <li>모든 개인설정 삭제</li>
+    </ul>
+  </div>
+
+  <div class="notebox avoid">
+    <span class="nb-t">시연판의 계정</span>
+    시연판에서는 별도의 실제 이용인 계정을 만들지 않고, <b>〈가상 이용인 A〉, 〈가상 이용인 B〉처럼
+    서로 다른 필요를 가진 예시</b>만 제공합니다.
+  </div>
+
+  <div class="spacer"></div>
+  <div class="runfoot"><span>복지관 기여 방안 제안서 10 — 뇌병변장애인 AAC 웹앱</span><span class="pageno">10</span></div>
+</section>
+
+<!-- ================= PAGE 11 : Ⅴ-1,2 ================= -->
+<section class="page">
+  <div class="runhead"><span class="rh-l">Ⅴ. 접근성 설계 원칙</span><span>AAC WEB APP — PROPOSAL 10</span></div>
+  <div class="secnum-row">
+    <div class="secnum">Ⅴ</div>
+    <div>
+      <div class="kicker">Accessibility Principles</div>
+      <h2 class="sec-title">접근성 설계 원칙</h2>
+    </div>
+  </div>
+
+  <h3 class="sub"><span class="no">01</span>큰 버튼과 충분한 간격</h3>
+  <p class="body">
+    손떨림, 경직, 불수의운동 또는 미세운동의 어려움이 있는 이용인은
+    <b>작은 버튼을 정확하게 누르기 어려울 수 있습니다.</b>
+  </p>
+  <ul class="oklist" style="margin:2mm 0 4mm 0;">
+    <li>중요한 버튼은 충분히 크게 표시합니다.</li>
+    <li>버튼 사이에 넓은 간격을 둡니다.</li>
+    <li>서로 반대되는 기능을 지나치게 가깝게 두지 않습니다.</li>
+    <li>화면당 버튼 수를 줄일 수 있게 합니다.</li>
+    <li>버튼 크기를 이용인별로 조정할 수 있게 합니다.</li>
+  </ul>
+
+  <h3 class="sub"><span class="no">02</span>오선택 예방</h3>
+  <div class="grid3" style="margin:3mm 0 4mm 0;">
+    <div class="card"><span class="c-no">01</span><div class="c-t">일정 시간 누르기</div></div>
+    <div class="card"><span class="c-no">02</span><div class="c-t">선택 후 확인</div></div>
+    <div class="card"><span class="c-no">03</span><div class="c-t">선택취소</div></div>
+    <div class="card"><span class="c-no">04</span><div class="c-t">한 단계 되돌리기</div></div>
+    <div class="card"><span class="c-no">05</span><div class="c-t">같은 버튼의 연속입력 방지</div></div>
+    <div class="card"><span class="c-no">06</span><div class="c-t">긴급표현과 일반표현의 위치 분리</div></div>
+  </div>
+
+  <div class="notebox avoid">
+    <span class="nb-t">확인단계의 균형</span>
+    모든 기능에 확인단계를 강제하면 <b>의사소통이 지나치게 느려질 수 있으므로</b>
+    이용인별로 확인방식을 조정할 수 있게 합니다.
+  </div>
+
+  <div class="spacer"></div>
+  <div class="runfoot"><span>복지관 기여 방안 제안서 10 — 뇌병변장애인 AAC 웹앱</span><span class="pageno">11</span></div>
+</section>
+
+<!-- ================= PAGE 12 : Ⅴ-3,4 ================= -->
+<section class="page">
+  <div class="runhead"><span class="rh-l">Ⅴ. 접근성 설계 원칙</span><span>AAC WEB APP — PROPOSAL 10</span></div>
+
+  <h3 class="sub" style="margin-top:0;"><span class="no">03</span>시각적 이해 지원</h3>
+  <div class="cols2" style="margin:2mm 0 4mm 0;">
+    <ul class="oklist">
+      <li>글자와 그림을 함께 표시할 수 있게 합니다.</li>
+      <li>고대비 화면을 제공합니다.</li>
+      <li>장식적인 요소와 움직이는 효과를 최소화합니다.</li>
+    </ul>
+    <ul class="oklist">
+      <li>색상만으로 의미를 구분하지 않습니다.</li>
+      <li>익숙한 사진이나 그림을 이용할 수 있게 합니다.</li>
+      <li>선택된 버튼이 무엇인지 명확하게 표시합니다.</li>
+    </ul>
+  </div>
+
+  <h3 class="sub"><span class="no">04</span>이용인의 표현권 보장</h3>
+  <p class="body">
+    다음 표현은 <b>특별한 이유 없이 삭제하거나 숨기지 않습니다.</b>
+  </p>
+  <div class="chips" style="margin:3mm 0 4mm 0;">
+    <span class="chip">아니요</span>
+    <span class="chip">싫어요</span>
+    <span class="chip">중단해주세요</span>
+    <span class="chip">도움이 필요해요</span>
+    <span class="chip">제가 직접 선택하겠습니다</span>
+    <span class="chip">다른 사람과 이야기하고 싶어요</span>
+    <span class="chip">혼자 있고 싶어요</span>
+    <span class="chip">잘못 이해하셨어요</span>
+  </div>
+
+  <div class="pull avoid">
+    <span class="mark">“</span>
+    <p>의사소통 도구가 <span style="color:var(--accent);">순응을 유도하는 수단</span>이 되지 않도록<br>
+    선택, 거부, 질문, 항의 및 대화종료 표현을 함께 제공합니다.</p>
+  </div>
+
+  <div class="spacer"></div>
+  <div class="runfoot"><span>복지관 기여 방안 제안서 10 — 뇌병변장애인 AAC 웹앱</span><span class="pageno">12</span></div>
+</section>
+
+<!-- ================= PAGE 13 : Ⅵ ================= -->
+<section class="page">
+  <div class="runhead"><span class="rh-l">Ⅵ. 기대하는 도움</span><span>AAC WEB APP — PROPOSAL 10</span></div>
+  <div class="secnum-row">
+    <div class="secnum">Ⅵ</div>
+    <div>
+      <div class="kicker">Expected Impact</div>
+      <h2 class="sec-title">기대하는 도움</h2>
+    </div>
+  </div>
+
+  <div class="grid2" style="gap:5mm 7mm;">
+    <div class="card">
+      <span class="c-no">01</span>
+      <div class="c-t">이용인의 자기결정 지원</div>
+      <div class="c-d">이용인이 참여·거부·선호·불편을 직접 표현할 수 있는 수단을 제공합니다. 다른 사람이 의미를 추측하는 비중을 줄이고 최종 선택권을 이용인에게 둡니다.</div>
+    </div>
+    <div class="card">
+      <span class="c-no">02</span>
+      <div class="c-t">반복적인 의사소통 부담 감소</div>
+      <div class="c-d">자주 사용하는 표현을 빠르게 선택함으로써 같은 말을 여러 번 반복해야 하는 부담을 줄일 수 있습니다.</div>
+    </div>
+    <div class="card">
+      <span class="c-no">03</span>
+      <div class="c-t">직원마다 다른 추측 감소</div>
+      <div class="c-d">개인별 표현판과 의사소통 안내를 이용하면 담당자가 바뀌더라도 동일한 기본표현을 확인할 수 있습니다.</div>
+    </div>
+    <div class="card">
+      <span class="c-no">04</span>
+      <div class="c-t">프로그램·헬스장·상담에서의 활용</div>
+      <div class="c-d">복지관의 여러 공간에서 참여 여부, 중단 요청, 불편, 도움 및 선택을 표현하는 데 활용할 수 있습니다.</div>
+    </div>
+  </div>
+
+  <div class="pull" style="margin-top:9mm;">
+    <p style="font-size:14pt;line-height:1.7;">추측하지 않습니다.<br>
+    <span style="color:var(--accent);">이용인이 직접 선택합니다.</span></p>
+    <div class="cap">웹앱은 의사를 대신 판단하지 않고, 선택한 내용을 전달하는 보조수단입니다.</div>
+  </div>
+
+  <div class="spacer"></div>
+  <div class="runfoot"><span>복지관 기여 방안 제안서 10 — 뇌병변장애인 AAC 웹앱</span><span class="pageno">13</span></div>
+</section>
+
+<!-- ================= PAGE 14 : Ⅶ / BACK ================= -->
+<section class="page">
+  <div class="runhead"><span class="rh-l">Ⅶ. 법적·윤리적·안전상 위험과 예방 방안</span><span>AAC WEB APP — PROPOSAL 10</span></div>
+  <div class="secnum-row">
+    <div class="secnum fill">Ⅶ</div>
+    <div>
+      <div class="kicker">Risk &amp; Prevention</div>
+      <h2 class="sec-title" style="font-size:20pt;">법적·윤리적·안전상<br>위험과 예방 방안</h2>
+    </div>
+  </div>
+
+  <h3 class="sub" style="margin:5mm 0 2.4mm 0;"><span class="no">01</span>핵심 원칙</h3>
+  <div class="pull" style="margin:1mm 0 3mm 0;padding:4mm 5.5mm;">
+    <span class="mark">“</span>
+    <p style="font-size:11.5pt;">웹앱은 이용인의 의사를 <span style="color:var(--accent);">대신 판단하지 않으며</span>,<br>
+    이용인이 선택한 내용을 전달하는 보조수단으로만 사용합니다.</p>
+  </div>
+
+  <h3 class="sub" style="margin:5mm 0 2.4mm 0;"><span class="no">02</span>이용인의 동의와 자기결정</h3>
+  <div class="cols2" style="margin:2mm 0 3mm 0;">
+    <ul class="oklist">
+      <li>이용인이 웹앱 사용을 원하지 않으면 기존 의사소통 방식을 사용합니다.</li>
+      <li>이용인의 의사와 보호자 또는 직원의 의견이 다를 수 있음을 전제로 합니다.</li>
+      <li>가능한 범위에서 이용인 본인이 표현의 내용과 위치를 결정합니다.</li>
+    </ul>
+    <ul class="oklist">
+      <li>보호자나 직원이 표현을 등록한 경우 이용인 본인의 확인 여부를 구분합니다.</li>
+      <li>웹앱 사용 여부를 프로그램 참여나 서비스 제공의 조건으로 삼지 않습니다.</li>
+      <li>사용 중 언제든지 중단할 수 있게 합니다.</li>
+    </ul>
+  </div>
+
+    <div class="spacer"></div>
+  <div class="runfoot"><span>복지관 기여 방안 제안서 10 — 뇌병변장애인 AAC 웹앱</span><span class="pageno">14</span></div>
+</section>
+
+<!-- ================= PAGE 15 : Ⅶ-3,4 / BACK ================= -->
+<section class="page">
+  <div class="runhead"><span class="rh-l">Ⅶ. 법적·윤리적·안전상 위험과 예방 방안</span><span>AAC WEB APP — PROPOSAL 10</span></div>
+
+  <h3 class="sub" style="margin-top:0;"><span class="no">03</span>의사소통 오류와 책임</h3>
+  <div class="notebox warn avoid" style="margin-top:1mm;font-size:10pt;">
+    <span class="nb-t">선택 ≠ 법률행위의 성립</span>
+    웹앱에서 출력된 문장은 <b>이용인이 해당 버튼을 선택했다는 사실</b>을 보여주는 것이지,
+    모든 상황에서 이용인의 완전한 의사능력이나 법률행위의 성립을 자동으로 증명하는 것은 아닙니다.
+    계약, 치료동의, 재산, 법률행위, 학대신고, 중대한 위험 또는 서비스 중단과 같은 중요한 결정에서는
+    <b>웹앱 한 번의 선택만으로 판단하지 않고</b> 복지관의 기존 절차와 필요한 의사결정 지원을 함께
+    적용해야 합니다.
+  </div>
+
+  <h3 class="sub" style="margin:5mm 0 2.4mm 0;"><span class="no">04</span>법률 검토의 한계</h3>
+  <div class="notebox" style="margin-top:1mm;font-size:10pt;">
+    <span class="nb-t">Disclaimer</span>
+    본 보고서는 법률의 일반원칙을 반영한 제안서이며 <b>개별 사안에 대한 법률의견서가 아닙니다.</b>
+    실제 개인정보 처리, 이용인 대상 시험, 기관 시스템 연동 및 외부 공개를 결정할 경우에는 그 시점의
+    법령, 복지관 내부규정 및 필요한 전문 검토를 별도로 확인해야 합니다.
+  </div>
+
+  <div class="spacer"></div>
+
+  <div style="border-top:2px solid var(--ink);padding-top:6mm;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;">
+      <div>
+        <div style="font-size:7pt;letter-spacing:.22em;font-weight:800;color:var(--accent);text-transform:uppercase;margin-bottom:2mm;">AAC Web App</div>
+        <div style="font-family:var(--serif);font-size:17pt;font-weight:900;letter-spacing:-.01em;line-height:1.35;">
+          뇌병변장애인 AAC 웹앱<span style="color:var(--accent);">.</span>
+        </div>
+        <div style="font-size:8pt;color:var(--gray);margin-top:2mm;">복지관 기여 방안 제안서 10 · 2026. 08</div>
+      </div>
+      <div style="font-family:var(--serif);font-size:40pt;font-weight:900;color:transparent;-webkit-text-stroke:1.1px var(--ink);line-height:1;">10</div>
+    </div>
+  </div>
+
+  <div class="runfoot"><span>복지관 기여 방안 제안서 10 — 뇌병변장애인 AAC 웹앱</span><span class="pageno">15</span></div>
+</section>
+
+
+</body>
+</html>
