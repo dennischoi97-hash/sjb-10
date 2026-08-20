@@ -477,25 +477,44 @@ function S(){ return P().settings; }
 /* =========================================================
    음성 출력 (TTS)
    ========================================================= */
+const TTS_OK = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
 let koVoice = null;
+let curU = null; // 발화 객체가 도중에 회수되어 소리가 끊기는 크롬 문제 방지
 function pickVoice(){
-  if(!('speechSynthesis' in window)) return;
+  if(!TTS_OK) return null;
   const vs = speechSynthesis.getVoices();
   koVoice = vs.find(v=>/^ko/i.test(v.lang)) || null;
+  return koVoice;
 }
-if('speechSynthesis' in window){
+if(TTS_OK){
   pickVoice();
   speechSynthesis.onvoiceschanged = pickVoice;
 }
 function speak(text){
   if(!text) return;
-  if(!('speechSynthesis' in window)){ toast('이 기기에서는 음성 출력을 지원하지 않습니다'); return; }
-  speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'ko-KR';
-  if(koVoice) u.voice = koVoice;
-  u.rate = S().rate; u.volume = S().volume;
-  speechSynthesis.speak(u);
+  if(!TTS_OK){ toast('이 기기는 음성 출력을 지원하지 않아 문장을 크게 보여줍니다'); return; }
+  const synth = speechSynthesis;
+  try{
+    // 말하는 중일 때만 끊는다 — 놀고 있는데 cancel()을 부르면
+    // 일부 크롬에서 바로 다음 speak()가 조용히 무시된다.
+    if(synth.speaking || synth.pending) synth.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    curU = u;
+    u.lang = 'ko-KR';
+    const v = koVoice || pickVoice();
+    if(v) u.voice = v;
+    u.rate = S().rate; u.volume = S().volume;
+    let started = false;
+    u.onstart = ()=>{ started = true; };
+    synth.resume(); // 일시정지 상태로 굳어 있으면 풀어 준다
+    synth.speak(u);
+    // cancel() 직후 발화가 무시되는 크롬 버그 대비: 시작을 못 했으면 한 번 재시도
+    setTimeout(()=>{
+      if(!started && curU === u){
+        try{ synth.cancel(); synth.resume(); synth.speak(u); }catch(e){}
+      }
+    }, 300);
+  }catch(e){}
 }
 
 /* =========================================================
@@ -671,8 +690,10 @@ function renderSpoken(){
 function speakOut(text, emergency){
   lastSpoken = text;
   speak(text);
+  try{ if(navigator.vibrate) navigator.vibrate(40); }catch(e){}
   renderSpoken();
-  if(emergency || S().bigAfter) openPartner(text, emergency);
+  // 음성이 안 되는 기기에서는 항상 큰 화면으로 대신 보여 준다
+  if(emergency || S().bigAfter || !TTS_OK) openPartner(text, emergency);
   scanRefresh();
 }
 // 표현 버튼: 원클릭 — 누르면 바로 출력 (확인 단계는 켠 경우에만)
@@ -682,10 +703,7 @@ function selectExpression(text){
 }
 // 긴급 표현: 항상 즉시 음성 + 상대방 화면
 function selectEmergency(text){
-  lastSpoken = text;
-  speak(text);
-  renderSpoken();
-  openPartner(text, true);
+  speakOut(text, true);
 }
 $('#spShow').addEventListener('click', ()=>{ if(lastSpoken) openPartner(lastSpoken, false); });
 
