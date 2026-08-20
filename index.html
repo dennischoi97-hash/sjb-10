@@ -105,19 +105,22 @@
   }
   .view-desc{color:var(--muted); font-size:calc(14px * var(--fscale)); margin-bottom:14px;}
 
-  /* 홈 타일 */
-  .tiles{display:grid; grid-template-columns:repeat(2,1fr); gap:14px;}
-  .tile{
-    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
-    min-height:calc(120px * var(--bscale)); padding:16px 10px;
-    font-weight:900; font-size:calc(20px * var(--fscale) * var(--bscale));
-    box-shadow:var(--shadow);
+  /* 상시 이동 탭 — 어느 화면이든 한 번에 */
+  #navstrip{
+    flex:0 0 auto; display:flex; gap:8px; padding:8px 14px;
+    background:var(--surface); border-bottom:2px solid var(--line);
+    overflow-x:auto; -webkit-overflow-scrolling:touch;
   }
-  .tile .ico{font-size:calc(34px * var(--bscale)); line-height:1;}
-  .tile .sub{font-size:calc(12px * var(--fscale)); font-weight:500; color:var(--muted);}
-  .tile.help{border-color:var(--danger); background:var(--danger-soft);}
-  .tile.help .sub{color:var(--danger);} body.hc .tile.help .sub{color:var(--danger);}
-  .tile.speakt{border-color:var(--accent); background:var(--accent-soft);}
+  #navstrip button{
+    flex:1 0 auto; font-weight:900; font-size:calc(15px * var(--fscale) * var(--bscale));
+    padding:calc(9px*var(--bscale)) calc(14px*var(--bscale)); border-radius:12px;
+    display:flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap;
+  }
+  #navstrip button[aria-selected="true"]{
+    background:var(--accent); border-color:var(--accent); color:var(--accent-ink);
+  }
+  #navstrip button.nav-help{border-color:var(--danger); background:var(--danger-soft);}
+  #navstrip button.nav-help[aria-selected="true"]{background:var(--danger); color:var(--danger-ink);}
 
   /* 카테고리 탭 */
   .tabs{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;}
@@ -300,7 +303,6 @@
 <header id="topbar">
   <div class="brand">말빛 <span class="demo-tag">시연판</span></div>
   <button id="profileChip" title="설정에서 프로필을 바꿀 수 있습니다">👤 —</button>
-  <button id="homeBtn">🏠 처음으로</button>
 </header>
 
 <div id="sentencebar">
@@ -314,36 +316,32 @@
   </div>
 </div>
 
-<main id="main">
-  <!-- 홈 -->
-  <section class="view" data-view="home">
-    <div class="tiles" id="homeTiles"></div>
-    <div class="section-note">
-      이 시연판은 제안서 10의 <b>1·2단계 범위만</b> 구현합니다. 음성인식·발화 통역 기능은 포함하지
-      않으며, 모든 프로필과 표현은 <b>가상의 예시</b>입니다.
-    </div>
-  </section>
+<nav id="navstrip" aria-label="화면 이동">
+  <button data-nav="quick">🔘 빠른 표현</button>
+  <button data-nav="builder">🧩 문장 만들기</button>
+  <button data-nav="help" class="nav-help">🆘 도움 요청</button>
+  <button data-nav="intro">🙂 내 소개</button>
+  <button data-nav="settings">⚙️ 설정</button>
+</nav>
 
+<main id="main">
   <!-- 빠른 표현 -->
   <section class="view" data-view="quick">
-    <h2 class="view-title">🔘 빠른 표현</h2>
-    <p class="view-desc">버튼을 누르면 문장이 크게 표시되고, 확인 후 음성으로 나갑니다.</p>
+    <p class="view-desc">버튼을 한 번 누르면 바로 음성으로 나갑니다. 확인 단계가 필요한 이용인은 설정에서 켤 수 있습니다.</p>
     <div class="tabs" id="quickTabs" role="tablist"></div>
     <div class="grid kgrid" id="quickGrid"></div>
   </section>
 
   <!-- 문장 만들기 -->
   <section class="view" data-view="builder">
-    <h2 class="view-title">🧩 문장 만들기</h2>
-    <p class="view-desc">단어를 순서대로 누르면 위 문장칸에 쌓입니다. 문장칸의 단어를 누르면 순서를 바꾸거나 지울 수 있습니다.</p>
+    <p class="view-desc">단어를 순서대로 누르면 위 문장칸에 쌓입니다. 다 만든 뒤 아래 〈말하기〉를 누르세요.</p>
     <div class="tabs" id="bankTabs" role="tablist"></div>
     <div class="grid kgrid" id="bankGrid"></div>
   </section>
 
   <!-- 도움 요청 -->
   <section class="view" data-view="help">
-    <h2 class="view-title">🆘 도움 요청</h2>
-    <p class="view-desc">긴급 표현은 확인 단계 없이 바로 크게 표시되고 음성으로 나갑니다.</p>
+    <p class="view-desc">긴급 표현은 항상 한 번에 크게 표시되고 음성으로 나갑니다.</p>
     <div class="grid kgrid" id="helpGrid"></div>
     <div class="section-note warn">
       긴급 표현은 일반 표현과 <b>화면을 분리</b>해 오작동을 줄이면서도 빠르게 쓸 수 있게 했습니다.
@@ -352,15 +350,13 @@
 
   <!-- 내 소개 -->
   <section class="view" data-view="intro">
-    <h2 class="view-title">🙂 내 소개</h2>
-    <p class="view-desc">처음 만나는 분에게 나와 나의 의사소통 방법을 알립니다.</p>
+    <p class="view-desc">처음 만나는 분에게 나와 나의 의사소통 방법을 알립니다. 누르면 바로 음성으로 나갑니다.</p>
     <div id="introList"></div>
   </section>
 
   <!-- 설정 -->
   <section class="view" data-view="settings">
-    <h2 class="view-title">⚙️ 설정</h2>
-    <p class="view-desc">이용화면과 분리된 설정 화면입니다. 이용인마다 다르게 저장됩니다.</p>
+    <p class="view-desc">이용화면과 분리된 설정 화면입니다. 이용인마다 다르게 저장됩니다. 이 시연판은 제안서 10의 1·2단계 범위만 구현하며, 모든 프로필과 표현은 가상의 예시입니다.</p>
     <div id="settingsBody"></div>
   </section>
 </main>
@@ -468,15 +464,16 @@ const BANK = [
    기본 프로필 (가상 예시)
    ========================================================= */
 function defaultSettings(){
+  // 기본값은 '한 번 누르면 바로 말하기'. 확인 단계·자동 크게 보기는 필요한 이용인만 켠다.
   return {cols:3, btnScale:1, fontScale:1, contrast:false, showEmoji:true,
-          confirm:true, dwellMs:0, scan:false, scanMs:1800, rate:1, volume:1};
+          confirm:false, bigAfter:false, dwellMs:0, scan:false, scanMs:1800, rate:1, volume:1};
 }
 function defaultProfiles(){
   return [
     { id:'a', icon:'🌷', name:'가상 이용인 A',
       desc:'손떨림이 있어 아주 큰 버튼·고대비·확인단계·누르기 유지가 필요한 예시',
       settings:Object.assign(defaultSettings(),
-        {cols:2, btnScale:1.35, fontScale:1.15, contrast:true, confirm:true, dwellMs:600, rate:0.85}),
+        {cols:2, btnScale:1.35, fontScale:1.15, contrast:true, confirm:true, bigAfter:true, dwellMs:600, rate:0.85}),
       custom:[
         {t:'서예 프로그램에 가고 싶어요', e:'🖌️'},
         {t:'라디오를 켜 주세요', e:'📻'},
@@ -518,12 +515,12 @@ function defaultProfiles(){
 /* =========================================================
    상태
    ========================================================= */
-const STORE_KEY = 'malbit-demo-v1';
+const STORE_KEY = 'malbit-demo-v2';
 let state = load();
 let sentence = [];          // 현재 문장 (단어 배열)
 let history = [];           // 한 단계 취소용
 let selChip = -1;           // 선택된 문장칸 단어
-let curView = 'home';
+let curView = 'quick';
 let quickCat = 'basic';
 let bankCat = 'who';
 let modalCb = null;
@@ -651,7 +648,7 @@ function scanRefresh(){
   if(root){
     btns = [...root.querySelectorAll('button')];
   }else{
-    btns = [...document.querySelectorAll('#main .view.active button, #actionbar button, #topbar button, #sentencebar button')];
+    btns = [...document.querySelectorAll('#main .view.active button, #actionbar button, #navstrip button, #topbar button, #sentencebar button')];
   }
   scan.list = btns.filter(b=>b.offsetParent !== null && !b.disabled);
   if(!scan.list.length) return;
@@ -783,9 +780,10 @@ $('#pWait').addEventListener('click', ()=>speak('잠시 기다려주세요.'));
 $('#pYes').addEventListener('click', ()=>speak('맞아요. 제 말이 맞아요.'));
 $('#pEdit').addEventListener('click', ()=>{ speak('수정할게요.'); closePartner(); });
 
+// 기본: 말하기만. 자동 크게 보기는 설정에서 켠 이용인만, 긴급은 항상 크게.
 function speakOut(text, emergency){
   speak(text);
-  openPartner(text, emergency);
+  if(emergency || S().bigAfter) openPartner(text, emergency);
 }
 function requestSpeak(){
   const t = sentenceText();
@@ -793,16 +791,17 @@ function requestSpeak(){
   if(S().confirm) openModal(t, ()=>speakOut(t));
   else speakOut(t);
 }
-// 빠른 표현 선택: 문장 설정 → (확인) → 출력
+// 빠른 표현: 원클릭 — 누르면 바로 출력 (확인 단계는 켠 경우에만)
 function selectExpression(text){
   setSentence([text]);
   if(S().confirm) openModal(text, ()=>speakOut(text));
   else speakOut(text);
 }
-// 긴급 표현: 확인 없이 즉시 출력
+// 긴급 표현: 확인 없이 즉시 출력 + 상대방 화면
 function selectEmergency(text){
   setSentence([text]);
-  speakOut(text, true);
+  speak(text);
+  openPartner(text, true);
 }
 
 /* 하단 동작바 */
@@ -814,8 +813,10 @@ $('#btnShow').addEventListener('click', ()=>{
 });
 $('#btnUndo').addEventListener('click', undo);
 $('#btnClear').addEventListener('click', clearSentence);
-$('#homeBtn').addEventListener('click', ()=>go('home'));
 $('#profileChip').addEventListener('click', ()=>go('settings'));
+document.querySelectorAll('#navstrip button').forEach(b=>{
+  b.addEventListener('click', ()=>go(b.dataset.nav));
+});
 
 /* =========================================================
    화면 전환·렌더링
@@ -823,6 +824,8 @@ $('#profileChip').addEventListener('click', ()=>go('settings'));
 function go(view){
   curView = view;
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active', v.dataset.view === view));
+  document.querySelectorAll('#navstrip button').forEach(b=>
+    b.setAttribute('aria-selected', b.dataset.nav === view ? 'true' : 'false'));
   if(view === 'quick') renderQuick();
   if(view === 'builder') renderBank();
   if(view === 'help') renderHelp();
@@ -830,31 +833,6 @@ function go(view){
   if(view === 'settings') renderSettings();
   $('#main').scrollTop = 0;
   scanRefresh();
-}
-
-function renderHome(){
-  const tiles = $('#homeTiles');
-  tiles.innerHTML = '';
-  const defs = [
-    ['quick','🔘','빠른 표현','자주 쓰는 말을 한 번에',''],
-    ['builder','🧩','문장 만들기','단어를 이어 새 문장을',''],
-    ['help','🆘','도움 요청','아프거나 급할 때','help'],
-    ['intro','🙂','내 소개','나의 대화 방법 알리기',''],
-    ['show','👁️','크게 보기','지금 문장을 상대방에게','speakt'],
-    ['settings','⚙️','설정','나에게 맞게 바꾸기','']
-  ];
-  defs.forEach(([id, ico, name, sub, cls])=>{
-    const b = makeSelBtn('tile ' + cls,
-      `<span class="ico">${ico}</span><span>${name}</span><span class="sub">${sub}</span>`,
-      ()=>{
-        if(id === 'show'){
-          const t = sentenceText();
-          if(!t){ toast('먼저 표현이나 단어를 선택해 주세요'); return; }
-          openPartner(t, false);
-        } else go(id);
-      });
-    tiles.appendChild(b);
-  });
 }
 
 function renderTabs(host, cats, cur, onPick){
@@ -1012,7 +990,8 @@ function renderSettings(){
   const c4 = el('div','set-card');
   c4.appendChild(el('h3',null,'입력과 확인'));
   c4.appendChild(el('div','h-desc','오선택을 예방합니다. 모든 확인을 강제하면 느려질 수 있어 이용인별로 조정합니다.'));
-  seg(row(c4,'선택 후 확인'), [['끔',false],['켬',true]], v=>s.confirm===v, v=>{s.confirm=v;});
+  seg(row(c4,'선택 후 확인'), [['끔 (한 번에 말하기)',false],['켬',true]], v=>s.confirm===v, v=>{s.confirm=v;});
+  seg(row(c4,'말한 뒤 크게 보기'), [['끔',false],['켬 (자동으로 상대방 화면)',true]], v=>s.bigAfter===v, v=>{s.bigAfter=v;});
   seg(row(c4,'누르기 유지시간'), [['없음',0],['0.4초',400],['0.6초',600],['1초',1000]], v=>s.dwellMs===v, v=>{s.dwellMs=v;});
   seg(row(c4,'스캔 방식'), [['끔',false],['켬',true]], v=>s.scan===v, v=>{s.scan=v;});
   seg(row(c4,'스캔 속도'), [['느리게',2400],['보통',1800],['빠르게',1200]], v=>s.scanMs===v, v=>{s.scanMs=v;});
@@ -1079,9 +1058,8 @@ function renderSettings(){
 /* =========================================================
    시작
    ========================================================= */
-renderHome();
 renderSentence();
 applySettings();
-go('home');
+go('quick');
 </script>
 </html>
