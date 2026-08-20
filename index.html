@@ -304,6 +304,7 @@
   <!-- 도움 요청 -->
   <section class="view" data-view="help">
     <div class="backrow"><button id="helpBack">← 표현으로 돌아가기</button></div>
+    <p class="view-desc">이미 〈도와주세요〉 소리가 나갔습니다. 아래 버튼은 알림음과 함께 항상 최대 음량으로 나갑니다.</p>
     <div class="grid kgrid" id="helpGrid"></div>
   </section>
 
@@ -490,8 +491,9 @@ if(TTS_OK){
   pickVoice();
   speechSynthesis.onvoiceschanged = pickVoice;
 }
-function speak(text){
+function speak(text, opts){
   if(!text) return;
+  opts = opts || {};
   if(!TTS_OK){ toast('이 기기는 음성 출력을 지원하지 않아 문장을 크게 보여줍니다'); return; }
   const synth = speechSynthesis;
   try{
@@ -503,7 +505,8 @@ function speak(text){
     u.lang = 'ko-KR';
     const v = koVoice || pickVoice();
     if(v) u.voice = v;
-    u.rate = S().rate; u.volume = S().volume;
+    u.rate = opts.rate !== undefined ? opts.rate : S().rate;
+    u.volume = opts.volume !== undefined ? opts.volume : S().volume;
     let started = false;
     u.onstart = ()=>{ started = true; };
     synth.resume(); // 일시정지 상태로 굳어 있으면 풀어 준다
@@ -514,6 +517,27 @@ function speak(text){
         try{ synth.cancel(); synth.resume(); synth.speak(u); }catch(e){}
       }
     }, 300);
+  }catch(e){}
+}
+
+/* 긴급 알림음 — 음성 합성이 없는 기기에서도 소리가 나도록 웹오디오로 직접 울린다 */
+let ac = null;
+function alarmChime(){
+  try{
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if(!AC) return;
+    ac = ac || new AC();
+    if(ac.state === 'suspended') ac.resume();
+    const t = ac.currentTime;
+    [[880,0],[1320,.18],[880,.36]].forEach(([f,off])=>{
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.type = 'triangle'; o.frequency.value = f;
+      g.gain.setValueAtTime(.0001, t+off);
+      g.gain.exponentialRampToValueAtTime(.9, t+off+.02);
+      g.gain.exponentialRampToValueAtTime(.0001, t+off+.17);
+      o.connect(g); g.connect(ac.destination);
+      o.start(t+off); o.stop(t+off+.2);
+    });
   }catch(e){}
 }
 
@@ -689,8 +713,14 @@ function renderSpoken(){
 }
 function speakOut(text, emergency){
   lastSpoken = text;
-  speak(text);
-  try{ if(navigator.vibrate) navigator.vibrate(40); }catch(e){}
+  if(emergency){
+    alarmChime();                      // 주의 알림음을 먼저 울리고
+    speak(text, {volume:1});           // 음량 설정과 무관하게 항상 최대 음량으로
+    try{ if(navigator.vibrate) navigator.vibrate([80,60,80]); }catch(e){}
+  }else{
+    speak(text);
+    try{ if(navigator.vibrate) navigator.vibrate(40); }catch(e){}
+  }
   renderSpoken();
   // 음성이 안 되는 기기에서는 항상 큰 화면으로 대신 보여 준다
   if(emergency || S().bigAfter || !TTS_OK) openPartner(text, emergency);
@@ -808,7 +838,14 @@ $('#bClear').addEventListener('click', ()=>{ words = []; renderWords(); });
 /* ---------- 상단·하단 ---------- */
 $('#setBtn').addEventListener('click', ()=>go('settings'));
 $('#setBack').addEventListener('click', ()=>go('quick'));
-$('#helpBtn')._act = ()=>go('help');
+// 하단 도움 버튼: 한 번에 즉시 최대 음량으로 소리 — 그 다음 세부 표현을 고를 수 있다
+$('#helpBtn')._act = ()=>{
+  lastSpoken = '도와주세요';
+  alarmChime();
+  speak('도와주세요.', {volume:1});
+  try{ if(navigator.vibrate) navigator.vibrate([80,60,80]); }catch(e){}
+  go('help');
+};
 $('#helpBtn').dataset.sel = '1';
 $('#helpBack').addEventListener('click', ()=>go('quick'));
 
