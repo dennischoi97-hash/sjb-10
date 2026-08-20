@@ -100,7 +100,7 @@ function card(sl, x, y, w, h, fill) {
     fontFace: F, fontSize: 13, bold: true, color: '9DBFA9', charSpacing: 2
   });
   sl.addText('말빛', {
-    x: 0.8, y: 1.5, w: 7.4, h: 1.5, margin: 0,
+    x: 0.8, y: 1.5, w: 7.4, h: 1.62, margin: 0,
     fontFace: F, fontSize: 78, bold: true, color: WHITE
   });
   sl.addText('뇌병변장애인을 위한\n개인맞춤형 의사소통 AAC 웹앱', {
@@ -145,7 +145,7 @@ function card(sl, x, y, w, h, fill) {
     const x = 0.6 + i * 4.15;
     card(sl, x, 1.75, 3.85, 2.05);
     sl.addText(big, {
-      x: x + 0.3, y: 1.92, w: 3.25, h: 0.72, margin: 0,
+      x: x + 0.3, y: 1.9, w: 3.25, h: 0.82, margin: 0,
       fontFace: F, fontSize: 40, bold: true, color: GREEN
     });
     sl.addText(lab, {
@@ -408,7 +408,7 @@ function card(sl, x, y, w, h, fill) {
     fontFace: F, fontSize: 32, bold: true, color: INK
   });
   // 두 화면의 높이가 달라 아래쪽 선을 맞춘다
-  const pw = 4.7, gap = 1.0;
+  const pw = 4.4, gap = 1.0;
   const px1 = (13.333 - (pw * 2 + gap)) / 2, px2 = px1 + pw + gap;
   const ph1 = ih('07-help.png', pw), ph2 = ih('09-partner-em.png', pw);
   const baseY = 1.85, bottom = baseY + Math.max(ph1, ph2);
@@ -451,30 +451,30 @@ function card(sl, x, y, w, h, fill) {
     x: 0.6, y: 1.55, w: 12.15, h: 0.4, margin: 0, fontFace: F, fontSize: 14, color: MUTE
   });
   const profs = [
-    ['11-highcontrast.png', '가상 이용인 A', '고대비 · 큰 버튼', '손떨림이 있어 버튼을 크게, 색 대비를 높이고 누르기 유지와 확인 단계를 켰습니다.'],
-    ['12-scan.png', '가상 이용인 B', '스캔 입력', '직접 누르기 어려워 항목이 차례로 강조되면 원하는 순간 확인키를 누릅니다.'],
+    ['11-highcontrast.png', '가상 이용인 A', '고대비 · 큰 버튼', '손떨림이 있어 버튼을 크게, 대비를 높이고 확인 단계를 켰습니다.'],
+    ['12-scan.png', '가상 이용인 B', '스캔 입력', '직접 누르기 어려워 항목이 강조될 때 확인키를 누릅니다.'],
     ['01-basic.png', '가상 이용인 C', '기본 설정', '직접 손으로 눌러 사용합니다. 한 번에 말하기가 켜져 있습니다.']
   ];
   profs.forEach(([file, name, mode, desc], i) => {
-    const x = 0.62 + i * 4.24;
-    const h = shot(sl, file, x, 2.12, 3.5);
+    const x = 0.62 + i * 4.37;
+    const h = shot(sl, file, x, 2.12, 3.35);
     const base = 2.12 + h;
     sl.addText(name, {
-      x, y: base + 0.16, w: 3.5, h: 0.3, margin: 0,
+      x, y: base + 0.14, w: 3.35, h: 0.3, margin: 0,
       fontFace: F, fontSize: 15, bold: true, color: INK, align: 'center'
     });
     sl.addText(mode, {
-      x, y: base + 0.48, w: 3.5, h: 0.28, margin: 0,
+      x, y: base + 0.44, w: 3.35, h: 0.28, margin: 0,
       fontFace: F, fontSize: 12.5, bold: true, color: GREEN, align: 'center'
     });
     sl.addText(desc, {
-      x, y: base + 0.8, w: 3.5, h: 0.8, margin: 0,
+      x, y: base + 0.74, w: 3.35, h: 0.7, margin: 0,
       fontFace: F, fontSize: 11, color: MUTE, align: 'center', lineSpacing: 16
     });
   });
-  card(sl, 0.62, 6.28, 12.1, 0.72, PALE);
+  card(sl, 0.62, 6.4, 12.1, 0.6, PALE);
   sl.addText('시연 자리에서 설정을 눌러 세 화면을 즉시 바꿔 보여드릴 수 있습니다. 실제 이용인에게 적용할 때도 같은 방식으로 맞춥니다.', {
-    x: 0.95, y: 6.28, w: 11.5, h: 0.72, margin: 0,
+    x: 0.95, y: 6.4, w: 11.5, h: 0.6, margin: 0,
     fontFace: F, fontSize: 13, bold: true, color: GREEN, valign: 'middle'
   });
   sl.addNotes('가장 보여드리고 싶은 부분입니다. 같은 앱인데 이용인마다 화면이 다릅니다. 설정에서 즉시 바꿔 보여드릴 수 있습니다.');
