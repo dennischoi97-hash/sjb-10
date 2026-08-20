@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="ko">
+<title>말빛</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+  /* ==========================================================
+     말빛 — 개인맞춤형 의사소통 AAC 웹앱 (시연판)
+     제안서 10의 1·2단계 범위만 구현. 모든 프로필·표현은 가상 예시.
+     ========================================================== */
+  :root{
+    --bg:#f6f5f0; --surface:#ffffff; --ink:#1c2420; --muted:#5c6660;
+    --line:#dde1db; --accent:#0f5132; --accent-ink:#ffffff; --accent-soft:#e6efe8;
+    --danger:#b3261e; --danger-ink:#ffffff; --danger-soft:#fbeae8;
+    --chip:#eef2ec; --focus:#ffb703; --shadow:0 1px 3px rgba(28,36,32,.08);
+    --bscale:1; --fscale:1; --cols:3;
+    --sans:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+    --disp:'Gowun Dodum','Noto Sans KR',sans-serif;
+  }
+  body.hc{
+    --bg:#000000; --surface:#141414; --ink:#ffffff; --muted:#d6d6d6;
+    --line:#5a5a5a; --accent:#ffd400; --accent-ink:#000000; --accent-soft:#2e2a12;
+    --danger:#ff7264; --danger-ink:#000000; --danger-soft:#3a100b;
+    --chip:#242424; --focus:#00e0ff; --shadow:none;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{height:100%;}
+  body{
+    height:100%; background:var(--bg); color:var(--ink);
+    font-family:var(--sans); font-size:calc(16px * var(--fscale));
+    line-height:1.5; word-break:keep-all;
+    display:flex; flex-direction:column; overflow:hidden;
+  }
+  button{
+    font-family:inherit; font-size:inherit; color:inherit;
+    background:var(--surface); border:2px solid var(--line);
+    border-radius:14px; cursor:pointer; touch-action:manipulation;
+    -webkit-user-select:none; user-select:none;
+  }
+  button:focus-visible{outline:4px solid var(--focus); outline-offset:2px;}
+  .scan-hl{outline:5px solid var(--focus) !important; outline-offset:2px;}
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation:none !important; transition:none !important;}
+  }
+
+  /* ---------- 상단바 ---------- */
+  #topbar{
+    flex:0 0 auto; display:flex; align-items:center; gap:10px;
+    padding:10px 14px; background:var(--surface); border-bottom:2px solid var(--line);
+  }
+  #topbar .brand{
+    font-family:var(--disp); font-size:calc(20px * var(--fscale)); font-weight:400;
+    color:var(--accent); letter-spacing:.02em; display:flex; align-items:baseline; gap:8px;
+  }
+  body.hc #topbar .brand{color:var(--accent);}
+  #topbar .demo-tag{
+    font-size:calc(11px * var(--fscale)); font-weight:700; color:var(--muted);
+    border:1.5px solid var(--line); border-radius:99px; padding:1px 8px;
+  }
+  #profileChip{
+    margin-left:auto; border:2px solid var(--accent); background:var(--accent-soft);
+    color:var(--ink); font-weight:700; font-size:calc(13px * var(--fscale));
+    border-radius:99px; padding:6px 12px;
+  }
+  #homeBtn{
+    font-weight:900; padding:6px 14px; font-size:calc(14px * var(--fscale));
+    border-color:var(--accent); color:var(--accent); background:var(--surface);
+  }
+  body.hc #homeBtn{color:var(--accent);}
+
+  /* ---------- 문장칸 ---------- */
+  #sentencebar{
+    flex:0 0 auto; background:var(--surface); border-bottom:2px solid var(--line);
+    padding:10px 14px 8px;
+  }
+  #sentencebar .sb-label{
+    font-size:calc(11px * var(--fscale)); font-weight:700; letter-spacing:.14em;
+    color:var(--muted); text-transform:uppercase; margin-bottom:4px;
+  }
+  #sentence{
+    min-height:calc(46px * var(--bscale));
+    display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+  }
+  #sentence .empty{color:var(--muted); font-size:calc(15px * var(--fscale));}
+  .chipword{
+    background:var(--chip); border:2px solid var(--line); border-radius:12px;
+    padding:calc(6px*var(--bscale)) calc(12px*var(--bscale));
+    font-size:calc(18px * var(--fscale) * var(--bscale)); font-weight:700;
+  }
+  .chipword.sel{border-color:var(--accent); background:var(--accent-soft);}
+  #chipCtl{display:none; gap:8px; margin-top:8px; flex-wrap:wrap;}
+  #chipCtl.show{display:flex;}
+  #chipCtl button{
+    font-size:calc(14px * var(--fscale)); font-weight:700; padding:8px 12px;
+  }
+
+  /* ---------- 본문 ---------- */
+  #main{flex:1 1 auto; overflow-y:auto; padding:16px 14px 24px; -webkit-overflow-scrolling:touch;}
+  .view{display:none; max-width:860px; margin:0 auto;}
+  .view.active{display:block;}
+  .view-title{
+    font-family:var(--disp); font-size:calc(22px * var(--fscale));
+    margin-bottom:4px; display:flex; align-items:center; gap:10px;
+  }
+  .view-desc{color:var(--muted); font-size:calc(14px * var(--fscale)); margin-bottom:14px;}
+
+  /* 홈 타일 */
+  .tiles{display:grid; grid-template-columns:repeat(2,1fr); gap:14px;}
+  .tile{
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
+    min-height:calc(120px * var(--bscale)); padding:16px 10px;
+    font-weight:900; font-size:calc(20px * var(--fscale) * var(--bscale));
+    box-shadow:var(--shadow);
+  }
+  .tile .ico{font-size:calc(34px * var(--bscale)); line-height:1;}
+  .tile .sub{font-size:calc(12px * var(--fscale)); font-weight:500; color:var(--muted);}
+  .tile.help{border-color:var(--danger); background:var(--danger-soft);}
+  .tile.help .sub{color:var(--danger);} body.hc .tile.help .sub{color:var(--danger);}
+  .tile.speakt{border-color:var(--accent); background:var(--accent-soft);}
+
+  /* 카테고리 탭 */
+  .tabs{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;}
+  .tab{
+    font-weight:700; font-size:calc(15px * var(--fscale));
+    padding:calc(8px*var(--bscale)) calc(14px*var(--bscale)); border-radius:99px;
+  }
+  .tab[aria-selected="true"]{background:var(--accent); border-color:var(--accent); color:var(--accent-ink);}
+
+  /* 표현·단어 격자 */
+  .grid{
+    display:grid; grid-template-columns:repeat(var(--cols),1fr);
+    gap:calc(12px * var(--bscale));
+  }
+  .exp{
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+    min-height:calc(88px * var(--bscale)); padding:calc(12px*var(--bscale)) 8px;
+    font-weight:700; font-size:calc(18px * var(--fscale) * var(--bscale));
+    line-height:1.35; text-align:center; position:relative; overflow:hidden;
+    box-shadow:var(--shadow);
+  }
+  .exp .ico{font-size:calc(30px * var(--bscale)); line-height:1;}
+  .exp .lock{
+    position:absolute; top:6px; right:8px; font-size:12px; color:var(--muted);
+  }
+  .exp.danger{border-color:var(--danger); background:var(--danger-soft);}
+  body.noemoji .exp .ico, body.noemoji .tile .ico{display:none;}
+  /* 누르기 유지(dwell) 진행 표시 */
+  .exp.dwelling::after{
+    content:""; position:absolute; left:0; bottom:0; height:7px; width:100%;
+    background:var(--accent); transform-origin:left;
+    transform:scaleX(0); animation:dwfill var(--dwms,800ms) linear forwards;
+  }
+  @keyframes dwfill{to{transform:scaleX(1);}}
+
+  .section-note{
+    border:2px solid var(--line); border-left:6px solid var(--accent);
+    background:var(--surface); border-radius:10px;
+    padding:12px 14px; margin:16px 0 0; font-size:calc(14px * var(--fscale));
+  }
+  .section-note.warn{border-left-color:var(--danger);}
+
+  /* ---------- 하단 동작바 ---------- */
+  #actionbar{
+    flex:0 0 auto; display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:10px;
+    padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+    background:var(--surface); border-top:2px solid var(--line);
+  }
+  #actionbar button{
+    min-height:calc(58px * var(--bscale));
+    font-weight:900; font-size:calc(16px * var(--fscale) * var(--bscale));
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+  }
+  #actionbar .ico{font-size:calc(20px * var(--bscale)); line-height:1;}
+  #btnSpeak{background:var(--accent); border-color:var(--accent); color:var(--accent-ink);}
+
+  /* ---------- 상대방 화면 ---------- */
+  #partner{
+    display:none; position:fixed; inset:0; z-index:50; background:var(--bg);
+    flex-direction:column; padding:20px 18px calc(16px + env(safe-area-inset-bottom));
+  }
+  #partner.open{display:flex;}
+  #partner .p-head{
+    display:flex; justify-content:space-between; align-items:center; gap:10px;
+    color:var(--muted); font-weight:700; font-size:calc(14px * var(--fscale));
+  }
+  #partner.em .p-head .p-tag{color:var(--danger);}
+  #pText{
+    flex:1 1 auto; display:flex; align-items:center; justify-content:center;
+    text-align:center; font-weight:900; line-height:1.4;
+    font-size:clamp(30px, 9vw, 76px); padding:10px;
+  }
+  #partner.em #pText{color:var(--danger);}
+  #pGuide{
+    text-align:center; color:var(--muted); font-size:calc(15px * var(--fscale));
+    border-top:2px solid var(--line); padding-top:10px; margin-bottom:12px;
+  }
+  #partner .p-btns{display:grid; grid-template-columns:repeat(2,1fr); gap:10px;}
+  #partner .p-btns button{
+    min-height:calc(64px * var(--bscale)); font-weight:900;
+    font-size:calc(17px * var(--fscale) * var(--bscale));
+  }
+  #pReplay{background:var(--accent); border-color:var(--accent); color:var(--accent-ink);}
+
+  /* ---------- 확인 모달 ---------- */
+  #modal{
+    display:none; position:fixed; inset:0; z-index:60;
+    background:rgba(10,14,12,.55); align-items:center; justify-content:center; padding:18px;
+  }
+  #modal.open{display:flex;}
+  #modal .m-box{
+    background:var(--surface); border:3px solid var(--accent); border-radius:18px;
+    width:min(560px,100%); padding:22px 20px; text-align:center;
+  }
+  #modal.warn .m-box{border-color:var(--danger);}
+  #mTitle{font-size:calc(17px * var(--fscale)); font-weight:700; color:var(--muted); margin-bottom:10px;}
+  #mText{font-size:calc(26px * var(--fscale)); font-weight:900; line-height:1.45; margin-bottom:18px;}
+  #modal .m-btns{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  #modal .m-btns button{min-height:calc(64px*var(--bscale)); font-weight:900; font-size:calc(18px * var(--fscale));}
+  #mOk{background:var(--accent); border-color:var(--accent); color:var(--accent-ink);}
+  #modal.warn #mOk{background:var(--danger); border-color:var(--danger); color:var(--danger-ink);}
+
+  /* ---------- 설정 ---------- */
+  .set-card{
+    background:var(--surface); border:2px solid var(--line); border-radius:14px;
+    padding:16px; margin-bottom:14px;
+  }
+  .set-card h3{
+    font-family:var(--disp); font-size:calc(17px * var(--fscale)); margin-bottom:4px;
+    color:var(--accent);
+  }
+  .set-card .h-desc{color:var(--muted); font-size:calc(13px * var(--fscale)); margin-bottom:12px;}
+  .set-row{display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-bottom:12px;}
+  .set-row:last-child{margin-bottom:0;}
+  .set-row label.rl{flex:0 0 128px; font-weight:700; font-size:calc(14px * var(--fscale));}
+  .seg{display:flex; flex-wrap:wrap; gap:6px;}
+  .seg button{font-weight:700; font-size:calc(14px * var(--fscale)); padding:8px 14px; border-radius:10px;}
+  .seg button[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:var(--accent-ink);}
+  .profcard{
+    width:100%; text-align:left; padding:12px 14px; margin-bottom:8px;
+    display:flex; align-items:center; gap:12px;
+  }
+  .profcard .pc-ico{font-size:26px;}
+  .profcard .pc-name{font-weight:900; font-size:calc(16px * var(--fscale));}
+  .profcard .pc-desc{color:var(--muted); font-size:calc(13px * var(--fscale));}
+  .profcard[aria-pressed="true"]{border-color:var(--accent); background:var(--accent-soft);}
+  .profcard .pc-cur{margin-left:auto; font-weight:900; color:var(--accent); font-size:calc(13px * var(--fscale));}
+  input[type="text"]{
+    font-family:inherit; font-size:calc(15px * var(--fscale)); color:var(--ink);
+    background:var(--bg); border:2px solid var(--line); border-radius:10px; padding:10px 12px;
+  }
+  input[type="text"]:focus-visible{outline:4px solid var(--focus); outline-offset:1px;}
+  input[type="range"]{accent-color:var(--accent); min-width:150px;}
+  textarea{
+    width:100%; min-height:110px; font-family:inherit; color:var(--ink);
+    font-size:calc(12px * var(--fscale)); background:var(--bg);
+    border:2px solid var(--line); border-radius:10px; padding:10px;
+  }
+  .mini{font-weight:700; font-size:calc(14px * var(--fscale)); padding:9px 14px;}
+  .mini.danger{border-color:var(--danger); color:var(--danger); background:var(--danger-soft);}
+  .customrow{
+    display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--line);
+    padding:8px 2px; font-size:calc(15px * var(--fscale));
+  }
+  .customrow:last-child{border-bottom:none;}
+  .customrow .cr-t{flex:1;}
+  .lockchips{display:flex; flex-wrap:wrap; gap:6px;}
+  .lockchip{
+    font-size:calc(13px * var(--fscale)); font-weight:700;
+    border:1.5px solid var(--line); border-radius:99px; padding:4px 10px;
+    background:var(--chip);
+  }
+
+  /* 소개 목록 */
+  .introbtn{
+    width:100%; text-align:left; font-weight:700;
+    font-size:calc(18px * var(--fscale) * var(--bscale));
+    padding:calc(14px*var(--bscale)) 16px; margin-bottom:10px;
+    display:flex; align-items:center; gap:12px; box-shadow:var(--shadow);
+  }
+  .introbtn .ico{font-size:calc(24px * var(--bscale));}
+
+  /* 토스트 */
+  #toast{
+    position:fixed; left:50%; bottom:110px; transform:translateX(-50%);
+    background:var(--ink); color:var(--bg); font-weight:700;
+    font-size:calc(14px * var(--fscale)); padding:10px 18px; border-radius:99px;
+    opacity:0; pointer-events:none; transition:opacity .25s; z-index:70;
+    max-width:90vw; text-align:center;
+  }
+  #toast.show{opacity:1;}
+
+  #demoFoot{
+    flex:0 0 auto; text-align:center; font-size:calc(11px * var(--fscale));
+    color:var(--muted); background:var(--surface); padding:3px 8px 4px;
+    border-top:1px solid var(--line);
+  }
+</style>
+
+<header id="topbar">
+  <div class="brand">말빛 <span class="demo-tag">시연판</span></div>
+  <button id="profileChip" title="설정에서 프로필을 바꿀 수 있습니다">👤 —</button>
+  <button id="homeBtn">🏠 처음으로</button>
+</header>
+
+<div id="sentencebar">
+  <div class="sb-label">지금 만든 문장</div>
+  <div id="sentence" role="status" aria-live="polite"></div>
+  <div id="chipCtl">
+    <button id="ccPrev">◀ 앞으로 이동</button>
+    <button id="ccNext">뒤로 이동 ▶</button>
+    <button id="ccDel">✕ 이 단어 삭제</button>
+    <button id="ccClose">닫기</button>
+  </div>
+</div>
+
+<main id="main">
+  <!-- 홈 -->
+  <section class="view" data-view="home">
+    <div class="tiles" id="homeTiles"></div>
+    <div class="section-note">
+      이 시연판은 제안서 10의 <b>1·2단계 범위만</b> 구현합니다. 음성인식·발화 통역 기능은 포함하지
+      않으며, 모든 프로필과 표현은 <b>가상의 예시</b>입니다.
+    </div>
+  </section>
+
+  <!-- 빠른 표현 -->
+  <section class="view" data-view="quick">
+    <h2 class="view-title">🔘 빠른 표현</h2>
+    <p class="view-desc">버튼을 누르면 문장이 크게 표시되고, 확인 후 음성으로 나갑니다.</p>
+    <div class="tabs" id="quickTabs" role="tablist"></div>
+    <div class="grid kgrid" id="quickGrid"></div>
+  </section>
+
+  <!-- 문장 만들기 -->
+  <section class="view" data-view="builder">
+    <h2 class="view-title">🧩 문장 만들기</h2>
+    <p class="view-desc">단어를 순서대로 누르면 위 문장칸에 쌓입니다. 문장칸의 단어를 누르면 순서를 바꾸거나 지울 수 있습니다.</p>
+    <div class="tabs" id="bankTabs" role="tablist"></div>
+    <div class="grid kgrid" id="bankGrid"></div>
+  </section>
+
+  <!-- 도움 요청 -->
+  <section class="view" data-view="help">
+    <h2 class="view-title">🆘 도움 요청</h2>
+    <p class="view-desc">긴급 표현은 확인 단계 없이 바로 크게 표시되고 음성으로 나갑니다.</p>
+    <div class="grid kgrid" id="helpGrid"></div>
+    <div class="section-note warn">
+      긴급 표현은 일반 표현과 <b>화면을 분리</b>해 오작동을 줄이면서도 빠르게 쓸 수 있게 했습니다.
+    </div>
+  </section>
+
+  <!-- 내 소개 -->
+  <section class="view" data-view="intro">
+    <h2 class="view-title">🙂 내 소개</h2>
+    <p class="view-desc">처음 만나는 분에게 나와 나의 의사소통 방법을 알립니다.</p>
+    <div id="introList"></div>
+  </section>
+
+  <!-- 설정 -->
+  <section class="view" data-view="settings">
+    <h2 class="view-title">⚙️ 설정</h2>
+    <p class="view-desc">이용화면과 분리된 설정 화면입니다. 이용인마다 다르게 저장됩니다.</p>
+    <div id="settingsBody"></div>
+  </section>
+</main>
+
+<footer id="actionbar">
+  <button id="btnSpeak"><span class="ico">🔊</span>말하기</button>
+  <button id="btnShow"><span class="ico">👁️</span>크게 보기</button>
+  <button id="btnUndo"><span class="ico">↩️</span>한 단계 취소</button>
+  <button id="btnClear"><span class="ico">🧹</span>지우기</button>
+</footer>
+<div id="demoFoot">시연판 · 모든 프로필과 표현은 가상의 예시입니다 · 개인정보를 입력하지 마세요</div>
+
+<!-- 상대방 화면 -->
+<div id="partner" role="dialog" aria-modal="true" aria-label="상대방에게 보여주는 화면">
+  <div class="p-head">
+    <span class="p-tag">상대방에게 보여주는 화면</span>
+    <button id="pClose" class="mini">✕ 닫기</button>
+  </div>
+  <div id="pText"></div>
+  <div id="pGuide"></div>
+  <div class="p-btns">
+    <button id="pReplay">🔊 다시 듣기</button>
+    <button id="pWait">⏳ 잠시 기다려주세요</button>
+    <button id="pYes">✅ 맞아요</button>
+    <button id="pEdit">✏️ 수정할게요</button>
+  </div>
+</div>
+
+<!-- 확인 모달 -->
+<div id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="m-box">
+    <div id="mTitle">이 문장이 맞습니까?</div>
+    <div id="mText"></div>
+    <div class="m-btns">
+      <button id="mOk">네, 말할게요</button>
+      <button id="mCancel">아니요, 취소</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+/* =========================================================
+   데이터 — 표현판 (모두 가상 예시)
+   ========================================================= */
+// 특별한 이유 없이 삭제하거나 숨기지 않는 표현 (표현권 보장)
+const LOCKED = [
+  '아니요','싫어요','그만해주세요','지금 중단해주세요','운동을 중단하고 싶어요',
+  '도와주세요','도움이 필요해요','제가 직접 선택하겠습니다',
+  '다른 사람과 이야기하고 싶어요','혼자 있고 싶어요','잘못 이해하셨어요'
+];
+const LOCKSET = new Set(LOCKED);
+
+const QUICK = [
+  {id:'basic', name:'기본응답', items:[
+    ['예','🙆'],['아니요','🙅'],['잘 모르겠어요','🤔'],['다시 물어봐주세요','🔁'],
+    ['제가 직접 선택하겠습니다','☝️'],['잘못 이해하셨어요','❗']
+  ]},
+  {id:'feel', name:'감정·선호', items:[
+    ['좋아요','😊'],['싫어요','😖'],['즐거워요','😄'],['불안해요','😟'],
+    ['혼자 있고 싶어요','🚪'],['다른 사람과 이야기하고 싶어요','👥']
+  ]},
+  {id:'daily', name:'일상생활', items:[
+    ['물이 필요해요','💧'],['식사하고 싶어요','🍚'],['화장실에 가고 싶어요','🚻'],
+    ['잠시 쉬고 싶어요','🛋️'],['덥습니다','🥵'],['춥습니다','🥶'],
+    ['커피 마시고 싶어요','☕'],['신문 가져다 주세요','📰']
+  ]},
+  {id:'prog', name:'프로그램', items:[
+    ['프로그램에 참여하고 싶어요','🙋'],['오늘은 참여하고 싶지 않아요','🙇'],
+    ['다른 활동을 하고 싶어요','🔄'],['설명을 천천히 다시 해주세요','🐢'],
+    ['잠시 쉬었다 할게요','⏸️']
+  ]},
+  {id:'gym', name:'헬스장', items:[
+    ['운동을 시작할게요','🏃'],['운동을 계속하고 싶어요','▶️'],
+    ['운동을 중단하고 싶어요','⏹️'],['강도를 낮춰주세요','⬇️'],
+    ['강도를 높여도 좋아요','⬆️'],['어깨가 아파요','💪']
+  ]},
+  {id:'mine', name:'내 표현', items:[]} // 프로필별 맞춤 표현이 이 자리에 표시됨
+];
+
+const HELP_ITEMS = [
+  ['도와주세요','🆘'],['아파요','🤕'],['불편해요','😣'],['숨이 차요','😮‍💨'],
+  ['어지러워요','💫'],['천천히 해주세요','🐢'],['지금 중단해주세요','✋'],['담당자를 불러주세요','📣']
+];
+
+const BANK = [
+  {id:'who', name:'누가', items:[['저는','🙂'],['우리','👥'],['선생님이','🧑‍🏫'],['가족이','👨‍👩‍👧']]},
+  {id:'when', name:'언제', items:[['지금','⏰'],['오늘','📅'],['이따가','🕒'],['내일','🌅']]},
+  {id:'where', name:'어디', items:[
+    ['집에','🏠'],['화장실에','🚻'],['헬스장에','🏋️'],['프로그램실에','🎨'],['식당에','🍽️'],['밖에','🌳']
+  ]},
+  {id:'act', name:'행동·요청', items:[
+    ['가고 싶어요','➡️'],['하고 싶어요','✨'],['먹고 싶어요','🍚'],['마시고 싶어요','🥤'],
+    ['쉬고 싶어요','🛋️'],['보고 싶어요','👀'],['도와주세요','🆘'],['그만하고 싶어요','✋'],['다시 해주세요','🔁']
+  ]},
+  {id:'state', name:'마음·상태', items:[
+    ['좋아요','😊'],['싫어요','😖'],['아파요','🤕'],['힘들어요','😥'],['즐거워요','😄'],['괜찮아요','👌']
+  ]},
+  {id:'deg', name:'정도', items:[['조금','🤏'],['많이','🙌'],['천천히','🐢'],['빨리','⚡']]}
+];
+
+/* =========================================================
+   기본 프로필 (가상 예시)
+   ========================================================= */
+function defaultSettings(){
+  return {cols:3, btnScale:1, fontScale:1, contrast:false, showEmoji:true,
+          confirm:true, dwellMs:0, scan:false, scanMs:1800, rate:1, volume:1};
+}
+function defaultProfiles(){
+  return [
+    { id:'a', icon:'🌷', name:'가상 이용인 A',
+      desc:'손떨림이 있어 아주 큰 버튼·고대비·확인단계·누르기 유지가 필요한 예시',
+      settings:Object.assign(defaultSettings(),
+        {cols:2, btnScale:1.35, fontScale:1.15, contrast:true, confirm:true, dwellMs:600, rate:0.85}),
+      custom:[
+        {t:'서예 프로그램에 가고 싶어요', e:'🖌️'},
+        {t:'라디오를 켜 주세요', e:'📻'},
+        {t:'담요를 덮어 주세요', e:'🧣'}
+      ],
+      intro:[
+        '안녕하세요, 저는 가상 이용인 A입니다.',
+        '저는 화면의 버튼을 눌러 대화합니다.',
+        '손이 떨려서 누르는 데 시간이 걸립니다. 기다려 주세요.',
+        '제가 문장을 확정한 뒤에 들어 주세요.'
+      ],
+      guide:'버튼을 누르는 데 시간이 걸립니다. 문장을 확정할 때까지 기다려 주세요.' },
+    { id:'b', icon:'🌊', name:'가상 이용인 B',
+      desc:'직접 누르기가 어려워 키보드 스캔 방식으로 선택하는 예시',
+      settings:Object.assign(defaultSettings(),
+        {cols:3, btnScale:1.15, confirm:false, scan:true, scanMs:1800}),
+      custom:[
+        {t:'음악 프로그램이 좋아요', e:'🎵'},
+        {t:'창가 자리에 앉고 싶어요', e:'🪟'}
+      ],
+      intro:[
+        '안녕하세요, 저는 가상 이용인 B입니다.',
+        '화면의 항목이 차례로 반짝이면, 제가 원하는 순간에 확인키를 누릅니다.',
+        '조금 느려도 제 말을 끝까지 들어 주세요.'
+      ],
+      guide:'항목이 차례로 강조됩니다. 제가 확인키를 누를 때까지 기다려 주세요.' },
+    { id:'c', icon:'🌱', name:'가상 이용인 C',
+      desc:'기본 설정으로 직접 터치해 사용하는 예시',
+      settings:defaultSettings(),
+      custom:[{t:'바둑 프로그램에 참여하고 싶어요', e:'⚫'}],
+      intro:[
+        '안녕하세요, 저는 가상 이용인 C입니다.',
+        '저는 이 화면을 눌러서 이야기합니다.'
+      ],
+      guide:'화면의 문장이 제 말입니다. 그대로 읽어 주세요.' }
+  ];
+}
+
+/* =========================================================
+   상태
+   ========================================================= */
+const STORE_KEY = 'malbit-demo-v1';
+let state = load();
+let sentence = [];          // 현재 문장 (단어 배열)
+let history = [];           // 한 단계 취소용
+let selChip = -1;           // 선택된 문장칸 단어
+let curView = 'home';
+let quickCat = 'basic';
+let bankCat = 'who';
+let modalCb = null;
+
+function load(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(raw){
+      const s = JSON.parse(raw);
+      if(s && Array.isArray(s.profiles) && s.profiles.length) return s;
+    }
+  }catch(e){ /* 저장소를 못 쓰는 환경에서는 메모리로만 동작 */ }
+  return {profiles:defaultProfiles(), cur:'c'};
+}
+function save(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
+}
+function P(){ return state.profiles.find(p=>p.id===state.cur) || state.profiles[0]; }
+function S(){ return P().settings; }
+
+/* =========================================================
+   음성 출력 (TTS)
+   ========================================================= */
+let koVoice = null;
+function pickVoice(){
+  if(!('speechSynthesis' in window)) return;
+  const vs = speechSynthesis.getVoices();
+  koVoice = vs.find(v=>/^ko/i.test(v.lang)) || null;
+}
+if('speechSynthesis' in window){
+  pickVoice();
+  speechSynthesis.onvoiceschanged = pickVoice;
+}
+function speak(text){
+  if(!text) return;
+  if(!('speechSynthesis' in window)){ toast('이 기기에서는 음성 출력을 지원하지 않습니다'); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ko-KR';
+  if(koVoice) u.voice = koVoice;
+  u.rate = S().rate; u.volume = S().volume;
+  speechSynthesis.speak(u);
+}
+
+/* =========================================================
+   공용 UI 도우미
+   ========================================================= */
+const $ = sel => document.querySelector(sel);
+let toastTimer = null;
+function toast(msg){
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.classList.remove('show'), 2200);
+}
+function el(tag, cls, html){
+  const n = document.createElement(tag);
+  if(cls) n.className = cls;
+  if(html !== undefined) n.innerHTML = html;
+  return n;
+}
+// 선택형 버튼(표현·단어): 누르기 유지/연속입력 방지/스캔의 대상
+function makeSelBtn(cls, html, act){
+  const b = el('button', cls, html);
+  b.dataset.sel = '1';
+  b._act = act;
+  return b;
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ---------- 활성화 경로: 클릭 / 누르기 유지 / 스캔 ---------- */
+function guardedAct(btn){
+  const now = Date.now();
+  if(btn._lastFire && now - btn._lastFire < 600) return; // 같은 버튼 연속입력 방지
+  btn._lastFire = now;
+  btn._act();
+}
+document.addEventListener('click', e=>{
+  const btn = e.target.closest('button');
+  if(!btn || !btn._act) return;
+  // 누르기 유지 모드에서는 포인터 클릭 대신 dwell 완료로만 실행
+  if(S().dwellMs > 0 && e.isTrusted && e.detail > 0) return;
+  guardedAct(btn);
+});
+/* 누르기 유지(dwell) */
+let dw = null;
+function dwCancel(){
+  if(!dw) return;
+  clearTimeout(dw.timer);
+  dw.btn.classList.remove('dwelling');
+  dw = null;
+}
+document.addEventListener('pointerdown', e=>{
+  const btn = e.target.closest('button[data-sel]');
+  if(!btn || !btn._act) return;
+  const ms = S().dwellMs;
+  if(!ms) return;
+  dwCancel();
+  btn.style.setProperty('--dwms', ms+'ms');
+  btn.classList.add('dwelling');
+  dw = {btn, timer:setTimeout(()=>{ btn.classList.remove('dwelling'); guardedAct(btn); dw=null; }, ms)};
+});
+['pointerup','pointercancel'].forEach(ev=>document.addEventListener(ev, dwCancel));
+document.addEventListener('pointerout', e=>{
+  if(dw && e.target === dw.btn && !dw.btn.contains(e.relatedTarget)) dwCancel();
+});
+
+/* ---------- 스캔 입력 ---------- */
+const scan = {list:[], i:-1, timer:null};
+function scanStop(){
+  clearInterval(scan.timer); scan.timer = null;
+  document.querySelectorAll('.scan-hl').forEach(n=>n.classList.remove('scan-hl'));
+  scan.list = []; scan.i = -1;
+}
+function scanRoot(){
+  if($('#modal').classList.contains('open')) return $('#modal');
+  if($('#partner').classList.contains('open')) return $('#partner');
+  return null; // 기본: 본문 + 상·하단바
+}
+function scanRefresh(){
+  scanStop();
+  if(!S().scan) return;
+  const root = scanRoot();
+  let btns;
+  if(root){
+    btns = [...root.querySelectorAll('button')];
+  }else{
+    btns = [...document.querySelectorAll('#main .view.active button, #actionbar button, #topbar button, #sentencebar button')];
+  }
+  scan.list = btns.filter(b=>b.offsetParent !== null && !b.disabled);
+  if(!scan.list.length) return;
+  scan.timer = setInterval(scanTick, S().scanMs);
+  scanTick();
+}
+function scanTick(){
+  document.querySelectorAll('.scan-hl').forEach(n=>n.classList.remove('scan-hl'));
+  if(!scan.list.length) return;
+  scan.i = (scan.i + 1) % scan.list.length;
+  const b = scan.list[scan.i];
+  if(!b.isConnected || b.offsetParent === null){ scanRefresh(); return; }
+  b.classList.add('scan-hl');
+  b.scrollIntoView({block:'nearest'});
+}
+document.addEventListener('keydown', e=>{
+  if(S().scan && (e.key === ' ' || e.key === 'Enter')){
+    const b = scan.list[scan.i];
+    if(b){
+      e.preventDefault();
+      b.classList.remove('scan-hl');
+      b.click();
+      setTimeout(scanRefresh, 50);
+      return;
+    }
+  }
+  // 키보드 방향키: 격자 안에서 이동
+  const f = document.activeElement;
+  if(f && f.tagName === 'BUTTON' && f.closest('.kgrid') &&
+     ['ArrowRight','ArrowLeft','ArrowDown','ArrowUp'].includes(e.key)){
+    const grid = f.closest('.kgrid');
+    const btns = [...grid.querySelectorAll('button')];
+    const i = btns.indexOf(f);
+    const cols = S().cols;
+    let j = i;
+    if(e.key === 'ArrowRight') j = i + 1;
+    if(e.key === 'ArrowLeft')  j = i - 1;
+    if(e.key === 'ArrowDown')  j = i + cols;
+    if(e.key === 'ArrowUp')    j = i - cols;
+    if(j >= 0 && j < btns.length){ e.preventDefault(); btns[j].focus(); }
+  }
+});
+
+/* =========================================================
+   문장 상태
+   ========================================================= */
+function sentenceText(){ return sentence.join(' '); }
+function pushHist(){ history.push(sentence.slice()); if(history.length > 40) history.shift(); }
+function renderSentence(){
+  const box = $('#sentence');
+  box.innerHTML = '';
+  if(!sentence.length){
+    box.appendChild(el('span','empty','아래에서 표현이나 단어를 선택하세요'));
+  }else{
+    sentence.forEach((w,i)=>{
+      const c = el('button','chipword' + (i===selChip?' sel':''), escapeHtml(w));
+      c.addEventListener('click', ()=>{ selChip = (selChip===i ? -1 : i); renderSentence(); });
+      box.appendChild(c);
+    });
+  }
+  $('#chipCtl').classList.toggle('show', selChip >= 0 && selChip < sentence.length);
+  scanRefresh();
+}
+function setSentence(words){
+  pushHist(); sentence = words.slice(); selChip = -1; renderSentence();
+}
+function appendWord(w){
+  pushHist(); sentence.push(w); selChip = -1; renderSentence();
+}
+function undo(){
+  if(!history.length){ toast('되돌릴 단계가 없습니다'); return; }
+  sentence = history.pop(); selChip = -1; renderSentence();
+}
+function clearSentence(){
+  if(!sentence.length) return;
+  pushHist(); sentence = []; selChip = -1; renderSentence();
+}
+/* 문장칸 단어 편집 */
+$('#ccPrev').addEventListener('click', ()=>{
+  if(selChip > 0){ pushHist();
+    [sentence[selChip-1], sentence[selChip]] = [sentence[selChip], sentence[selChip-1]];
+    selChip--; renderSentence(); }
+});
+$('#ccNext').addEventListener('click', ()=>{
+  if(selChip >= 0 && selChip < sentence.length-1){ pushHist();
+    [sentence[selChip+1], sentence[selChip]] = [sentence[selChip], sentence[selChip+1]];
+    selChip++; renderSentence(); }
+});
+$('#ccDel').addEventListener('click', ()=>{
+  if(selChip >= 0){ pushHist(); sentence.splice(selChip,1); selChip = -1; renderSentence(); }
+});
+$('#ccClose').addEventListener('click', ()=>{ selChip = -1; renderSentence(); });
+
+/* =========================================================
+   말하기 흐름: 확인 → 음성 → 상대방 화면
+   ========================================================= */
+function openModal(text, cb, opts){
+  opts = opts || {};
+  $('#mTitle').textContent = opts.title || '이 문장이 맞습니까?';
+  $('#mText').textContent = text;
+  $('#mOk').textContent = opts.ok || '네, 말할게요';
+  $('#modal').classList.toggle('warn', !!opts.warn);
+  modalCb = cb;
+  $('#modal').classList.add('open');
+  $('#mOk').focus();
+  scanRefresh();
+}
+function closeModal(){
+  $('#modal').classList.remove('open'); modalCb = null; scanRefresh();
+}
+$('#mOk').addEventListener('click', ()=>{ const cb = modalCb; closeModal(); if(cb) cb(); });
+$('#mCancel').addEventListener('click', closeModal);
+
+let partnerText = '';
+function openPartner(text, emergency){
+  partnerText = text;
+  $('#pText').textContent = text;
+  $('#pGuide').textContent = P().guide || '';
+  $('#partner').classList.toggle('em', !!emergency);
+  $('#partner').classList.add('open');
+  scanRefresh();
+}
+function closePartner(){
+  $('#partner').classList.remove('open'); scanRefresh();
+}
+$('#pClose').addEventListener('click', closePartner);
+$('#pReplay').addEventListener('click', ()=>speak(partnerText));
+$('#pWait').addEventListener('click', ()=>speak('잠시 기다려주세요.'));
+$('#pYes').addEventListener('click', ()=>speak('맞아요. 제 말이 맞아요.'));
+$('#pEdit').addEventListener('click', ()=>{ speak('수정할게요.'); closePartner(); });
+
+function speakOut(text, emergency){
+  speak(text);
+  openPartner(text, emergency);
+}
+function requestSpeak(){
+  const t = sentenceText();
+  if(!t){ toast('먼저 표현이나 단어를 선택해 주세요'); return; }
+  if(S().confirm) openModal(t, ()=>speakOut(t));
+  else speakOut(t);
+}
+// 빠른 표현 선택: 문장 설정 → (확인) → 출력
+function selectExpression(text){
+  setSentence([text]);
+  if(S().confirm) openModal(text, ()=>speakOut(text));
+  else speakOut(text);
+}
+// 긴급 표현: 확인 없이 즉시 출력
+function selectEmergency(text){
+  setSentence([text]);
+  speakOut(text, true);
+}
+
+/* 하단 동작바 */
+$('#btnSpeak')._act = requestSpeak; $('#btnSpeak').dataset.sel='1';
+$('#btnShow').addEventListener('click', ()=>{
+  const t = sentenceText();
+  if(!t){ toast('먼저 표현이나 단어를 선택해 주세요'); return; }
+  openPartner(t, false);
+});
+$('#btnUndo').addEventListener('click', undo);
+$('#btnClear').addEventListener('click', clearSentence);
+$('#homeBtn').addEventListener('click', ()=>go('home'));
+$('#profileChip').addEventListener('click', ()=>go('settings'));
+
+/* =========================================================
+   화면 전환·렌더링
+   ========================================================= */
+function go(view){
+  curView = view;
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active', v.dataset.view === view));
+  if(view === 'quick') renderQuick();
+  if(view === 'builder') renderBank();
+  if(view === 'help') renderHelp();
+  if(view === 'intro') renderIntro();
+  if(view === 'settings') renderSettings();
+  $('#main').scrollTop = 0;
+  scanRefresh();
+}
+
+function renderHome(){
+  const tiles = $('#homeTiles');
+  tiles.innerHTML = '';
+  const defs = [
+    ['quick','🔘','빠른 표현','자주 쓰는 말을 한 번에',''],
+    ['builder','🧩','문장 만들기','단어를 이어 새 문장을',''],
+    ['help','🆘','도움 요청','아프거나 급할 때','help'],
+    ['intro','🙂','내 소개','나의 대화 방법 알리기',''],
+    ['show','👁️','크게 보기','지금 문장을 상대방에게','speakt'],
+    ['settings','⚙️','설정','나에게 맞게 바꾸기','']
+  ];
+  defs.forEach(([id, ico, name, sub, cls])=>{
+    const b = makeSelBtn('tile ' + cls,
+      `<span class="ico">${ico}</span><span>${name}</span><span class="sub">${sub}</span>`,
+      ()=>{
+        if(id === 'show'){
+          const t = sentenceText();
+          if(!t){ toast('먼저 표현이나 단어를 선택해 주세요'); return; }
+          openPartner(t, false);
+        } else go(id);
+      });
+    tiles.appendChild(b);
+  });
+}
+
+function renderTabs(host, cats, cur, onPick){
+  host.innerHTML = '';
+  cats.forEach(c=>{
+    const b = el('button','tab', escapeHtml(c.name));
+    b.setAttribute('role','tab');
+    b.setAttribute('aria-selected', c.id === cur ? 'true' : 'false');
+    b.addEventListener('click', ()=>onPick(c.id));
+    host.appendChild(b);
+  });
+}
+function expBtn(text, emoji, act, extraCls){
+  const lock = LOCKSET.has(text) ? '<span class="lock" title="표현권 보장으로 항상 제공되는 표현">🔒</span>' : '';
+  return makeSelBtn('exp ' + (extraCls||''),
+    `${lock}<span class="ico">${emoji||'💬'}</span><span>${escapeHtml(text)}</span>`, act);
+}
+function renderQuick(){
+  renderTabs($('#quickTabs'), QUICK, quickCat, id=>{ quickCat = id; renderQuick(); });
+  const g = $('#quickGrid'); g.innerHTML = '';
+  const cat = QUICK.find(c=>c.id === quickCat);
+  let items = cat.items;
+  if(cat.id === 'mine') items = P().custom.map(c=>[c.t, c.e]);
+  if(!items.length){
+    g.appendChild(el('p','view-desc','아직 등록된 내 표현이 없습니다. 설정 → 표현 관리에서 추가할 수 있습니다.'));
+  }
+  items.forEach(([t,e])=>g.appendChild(expBtn(t, e, ()=>selectExpression(t))));
+  scanRefresh();
+}
+function renderBank(){
+  renderTabs($('#bankTabs'), BANK, bankCat, id=>{ bankCat = id; renderBank(); });
+  const g = $('#bankGrid'); g.innerHTML = '';
+  const cat = BANK.find(c=>c.id === bankCat);
+  cat.items.forEach(([t,e])=>g.appendChild(expBtn(t, e, ()=>appendWord(t))));
+  scanRefresh();
+}
+function renderHelp(){
+  const g = $('#helpGrid'); g.innerHTML = '';
+  HELP_ITEMS.forEach(([t,e])=>g.appendChild(expBtn(t, e, ()=>selectEmergency(t), 'danger')));
+  scanRefresh();
+}
+function renderIntro(){
+  const host = $('#introList'); host.innerHTML = '';
+  P().intro.forEach(t=>{
+    const b = makeSelBtn('introbtn', `<span class="ico">💬</span><span>${escapeHtml(t)}</span>`,
+      ()=>{ setSentence([t]); speakOut(t); });
+    host.appendChild(b);
+  });
+  scanRefresh();
+}
+
+/* =========================================================
+   설정 화면
+   ========================================================= */
+function applySettings(){
+  const s = S();
+  const r = document.documentElement.style;
+  r.setProperty('--cols', s.cols);
+  r.setProperty('--bscale', s.btnScale);
+  r.setProperty('--fscale', s.fontScale);
+  document.body.classList.toggle('hc', !!s.contrast);
+  document.body.classList.toggle('noemoji', !s.showEmoji);
+  $('#profileChip').textContent = '👤 ' + P().name;
+  scanRefresh();
+}
+function seg(host, options, isOn, onPick){
+  const wrap = el('div','seg');
+  options.forEach(([label, val])=>{
+    const b = el('button', null, escapeHtml(label));
+    b.setAttribute('aria-pressed', isOn(val) ? 'true' : 'false');
+    b.addEventListener('click', ()=>{ onPick(val); save(); applySettings(); renderSettings(); });
+    wrap.appendChild(b);
+  });
+  host.appendChild(wrap);
+  return wrap;
+}
+function row(card, labelText){
+  const r = el('div','set-row');
+  const l = el('label','rl', escapeHtml(labelText));
+  r.appendChild(l); card.appendChild(r);
+  return r;
+}
+function renderSettings(){
+  const host = $('#settingsBody'); host.innerHTML = '';
+  const s = S();
+
+  /* 1. 프로필 */
+  const c1 = el('div','set-card');
+  c1.appendChild(el('h3',null,'프로필 (가상 이용인)'));
+  c1.appendChild(el('div','h-desc','시연판에는 실제 이용인 계정이 없습니다. 서로 다른 필요를 가진 가상 예시만 제공합니다.'));
+  state.profiles.forEach(p=>{
+    const b = el('button','profcard',
+      `<span class="pc-ico">${p.icon}</span><span><span class="pc-name">${escapeHtml(p.name)}</span><br><span class="pc-desc">${escapeHtml(p.desc)}</span></span>` +
+      (p.id === state.cur ? '<span class="pc-cur">✓ 사용 중</span>' : ''));
+    b.setAttribute('aria-pressed', p.id === state.cur ? 'true' : 'false');
+    b.addEventListener('click', ()=>{
+      state.cur = p.id; save(); applySettings(); renderSettings();
+      toast(p.name + ' 프로필로 바꿨습니다');
+    });
+    c1.appendChild(b);
+  });
+  host.appendChild(c1);
+
+  /* 2. 표현 관리 */
+  const c2 = el('div','set-card');
+  c2.appendChild(el('h3',null,'표현 관리 — 내 표현'));
+  c2.appendChild(el('div','h-desc','이 프로필의 〈빠른 표현 → 내 표현〉에 표시됩니다. 가상의 예시 표현만 넣어 주세요.'));
+  const form = el('div','set-row');
+  const inT = el('input'); inT.type='text'; inT.placeholder='표현 문장 (예: 산책하러 가고 싶어요)'; inT.style.flex='1'; inT.style.minWidth='180px';
+  const inE = el('input'); inE.type='text'; inE.placeholder='그림(이모지)'; inE.style.width='110px';
+  const addB = el('button','mini','＋ 추가');
+  addB.addEventListener('click', ()=>{
+    const t = inT.value.trim();
+    if(!t){ toast('표현 문장을 입력해 주세요'); return; }
+    P().custom.push({t, e:(inE.value.trim() || '💬')});
+    save(); renderSettings(); toast('표현을 추가했습니다');
+  });
+  form.append(inT, inE, addB);
+  c2.appendChild(form);
+  const list = el('div');
+  if(!P().custom.length) list.appendChild(el('div','h-desc','등록된 내 표현이 없습니다.'));
+  P().custom.forEach((cx,i)=>{
+    const r = el('div','customrow',
+      `<span>${cx.e}</span><span class="cr-t">${escapeHtml(cx.t)}</span>`);
+    const d = el('button','mini danger','삭제');
+    d.addEventListener('click', ()=>{
+      openModal(`〈${cx.t}〉 표현을 삭제할까요?`, ()=>{
+        P().custom.splice(i,1); save(); renderSettings(); toast('삭제했습니다');
+      }, {title:'표현 삭제', ok:'네, 삭제할게요', warn:true});
+    });
+    r.appendChild(d); list.appendChild(r);
+  });
+  c2.appendChild(list);
+  const lockNote = el('div','h-desc');
+  lockNote.style.marginTop = '12px';
+  lockNote.textContent = '다음 표현은 표현권 보장을 위해 특별한 이유 없이 삭제하거나 숨기지 않습니다.';
+  c2.appendChild(lockNote);
+  const lc = el('div','lockchips');
+  LOCKED.forEach(t=>lc.appendChild(el('span','lockchip','🔒 ' + escapeHtml(t))));
+  c2.appendChild(lc);
+  host.appendChild(c2);
+
+  /* 3. 화면 */
+  const c3 = el('div','set-card');
+  c3.appendChild(el('h3',null,'화면'));
+  c3.appendChild(el('div','h-desc','버튼 수·크기·대비를 이용인에게 맞춥니다.'));
+  seg(row(c3,'한 줄의 버튼 수'), [['2개',2],['3개',3],['4개',4]], v=>s.cols===v, v=>{s.cols=v;});
+  seg(row(c3,'버튼 크기'), [['보통',1],['크게',1.2],['아주 크게',1.4]], v=>s.btnScale===v, v=>{s.btnScale=v;});
+  seg(row(c3,'글자 크기'), [['보통',1],['크게',1.15],['아주 크게',1.3]], v=>s.fontScale===v, v=>{s.fontScale=v;});
+  seg(row(c3,'고대비 화면'), [['끔',false],['켬',true]], v=>s.contrast===v, v=>{s.contrast=v;});
+  seg(row(c3,'그림(이모지) 표시'), [['글자만',false],['그림+글자',true]], v=>s.showEmoji===v, v=>{s.showEmoji=v;});
+  host.appendChild(c3);
+
+  /* 4. 입력·확인 */
+  const c4 = el('div','set-card');
+  c4.appendChild(el('h3',null,'입력과 확인'));
+  c4.appendChild(el('div','h-desc','오선택을 예방합니다. 모든 확인을 강제하면 느려질 수 있어 이용인별로 조정합니다.'));
+  seg(row(c4,'선택 후 확인'), [['끔',false],['켬',true]], v=>s.confirm===v, v=>{s.confirm=v;});
+  seg(row(c4,'누르기 유지시간'), [['없음',0],['0.4초',400],['0.6초',600],['1초',1000]], v=>s.dwellMs===v, v=>{s.dwellMs=v;});
+  seg(row(c4,'스캔 방식'), [['끔',false],['켬',true]], v=>s.scan===v, v=>{s.scan=v;});
+  seg(row(c4,'스캔 속도'), [['느리게',2400],['보통',1800],['빠르게',1200]], v=>s.scanMs===v, v=>{s.scanMs=v;});
+  const scanNote = el('div','h-desc');
+  scanNote.style.marginTop='6px';
+  scanNote.textContent = '스캔 방식: 항목이 차례로 강조되며, 원하는 순간 스페이스 키나 엔터 키를 누르면 선택됩니다. (시선입력기·외부 스위치 연동은 시연판 범위 밖 — 키보드로 원리만 시연)';
+  c4.appendChild(scanNote);
+  host.appendChild(c4);
+
+  /* 5. 음성 */
+  const c5 = el('div','set-card');
+  c5.appendChild(el('h3',null,'음성'));
+  const r5a = row(c5,'말 빠르기');
+  const rate = el('input'); rate.type='range'; rate.min='0.5'; rate.max='1.4'; rate.step='0.05'; rate.value=s.rate;
+  const rateV = el('span',null, s.rate.toFixed(2));
+  rate.addEventListener('input', ()=>{ s.rate = parseFloat(rate.value); rateV.textContent = s.rate.toFixed(2); save(); });
+  r5a.append(rate, rateV);
+  const r5b = row(c5,'음량');
+  const vol = el('input'); vol.type='range'; vol.min='0.2'; vol.max='1'; vol.step='0.05'; vol.value=s.volume;
+  const volV = el('span',null, Math.round(s.volume*100)+'%');
+  vol.addEventListener('input', ()=>{ s.volume = parseFloat(vol.value); volV.textContent = Math.round(s.volume*100)+'%'; save(); });
+  r5b.append(vol, volV);
+  const prev = el('button','mini','🔊 미리 듣기');
+  prev.addEventListener('click', ()=>speak('안녕하세요. 지금 목소리는 이렇게 들립니다.'));
+  row(c5,'확인').appendChild(prev);
+  host.appendChild(c5);
+
+  /* 6. 데이터 */
+  const c6 = el('div','set-card');
+  c6.appendChild(el('h3',null,'데이터'));
+  c6.appendChild(el('div','h-desc','설정과 표현을 파일 없이 글자로 내보내고 가져옵니다. 이 시연판의 자료는 이 기기에만 저장됩니다.'));
+  const ta = el('textarea'); ta.placeholder = '〈내보내기〉를 누르면 여기에 설정 내용이 나타납니다. 가져올 때는 여기에 붙여 넣고 〈가져오기〉를 누르세요.';
+  c6.appendChild(ta);
+  const r6 = el('div','set-row'); r6.style.marginTop = '10px';
+  const exB = el('button','mini','📤 내보내기');
+  exB.addEventListener('click', ()=>{ ta.value = JSON.stringify(state, null, 1); ta.select(); toast('아래 내용을 복사해 보관하세요'); });
+  const imB = el('button','mini','📥 가져오기');
+  imB.addEventListener('click', ()=>{
+    try{
+      const v = JSON.parse(ta.value);
+      if(!v || !Array.isArray(v.profiles) || !v.profiles.length) throw 0;
+      state = v;
+      if(!state.profiles.find(p=>p.id===state.cur)) state.cur = state.profiles[0].id;
+      save(); applySettings(); renderSettings(); toast('설정을 가져왔습니다');
+    }catch(e){ toast('가져올 수 없는 내용입니다'); }
+  });
+  const rsB = el('button','mini danger','🗑️ 모든 개인설정 삭제');
+  rsB.addEventListener('click', ()=>{
+    openModal('저장된 모든 프로필·표현·설정을 지우고 처음 상태로 되돌릴까요?', ()=>{
+      try{ localStorage.removeItem(STORE_KEY); }catch(e){}
+      state = {profiles:defaultProfiles(), cur:'c'};
+      sentence = []; history = []; selChip = -1;
+      save(); applySettings(); renderSentence(); renderSettings();
+      toast('처음 상태로 되돌렸습니다');
+    }, {title:'모든 개인설정 삭제', ok:'네, 모두 삭제할게요', warn:true});
+  });
+  r6.append(exB, imB, rsB);
+  c6.appendChild(r6);
+  host.appendChild(c6);
+
+  scanRefresh();
+}
+
+/* =========================================================
+   시작
+   ========================================================= */
+renderHome();
+renderSentence();
+applySettings();
+go('home');
+</script>
+</html>
