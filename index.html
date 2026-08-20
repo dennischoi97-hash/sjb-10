@@ -8,13 +8,14 @@
   /* ==========================================================
      말빛 — 개인맞춤형 의사소통 AAC 웹앱 (시연판)
      제안서 10의 1·2단계 범위만 구현. 모든 프로필·표현은 가상 예시.
+     원칙: 화면에는 표현 버튼만. 조작 버튼은 최소한으로.
      ========================================================== */
   :root{
     --bg:#f6f5f0; --surface:#ffffff; --ink:#1c2420; --muted:#5c6660;
     --line:#dde1db; --accent:#0f5132; --accent-ink:#ffffff; --accent-soft:#e6efe8;
     --danger:#b3261e; --danger-ink:#ffffff; --danger-soft:#fbeae8;
     --chip:#eef2ec; --focus:#ffb703; --shadow:0 1px 3px rgba(28,36,32,.08);
-    --bscale:1; --fscale:1; --cols:3;
+    --bscale:1; --fscale:1; --cols:2;
     --sans:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
     --disp:'Gowun Dodum','Noto Sans KR',sans-serif;
   }
@@ -50,104 +51,68 @@
     padding:10px 14px; background:var(--surface); border-bottom:2px solid var(--line);
   }
   #topbar .brand{
-    font-family:var(--disp); font-size:calc(20px * var(--fscale)); font-weight:400;
+    font-family:var(--disp); font-size:calc(20px * var(--fscale));
     color:var(--accent); letter-spacing:.02em; display:flex; align-items:baseline; gap:8px;
   }
-  body.hc #topbar .brand{color:var(--accent);}
   #topbar .demo-tag{
     font-size:calc(11px * var(--fscale)); font-weight:700; color:var(--muted);
     border:1.5px solid var(--line); border-radius:99px; padding:1px 8px;
   }
-  #profileChip{
-    margin-left:auto; border:2px solid var(--accent); background:var(--accent-soft);
-    color:var(--ink); font-weight:700; font-size:calc(13px * var(--fscale));
-    border-radius:99px; padding:6px 12px;
-  }
-  #homeBtn{
-    font-weight:900; padding:6px 14px; font-size:calc(14px * var(--fscale));
-    border-color:var(--accent); color:var(--accent); background:var(--surface);
-  }
-  body.hc #homeBtn{color:var(--accent);}
-
-  /* ---------- 문장칸 ---------- */
-  #sentencebar{
-    flex:0 0 auto; background:var(--surface); border-bottom:2px solid var(--line);
-    padding:10px 14px 8px;
-  }
-  #sentencebar .sb-label{
-    font-size:calc(11px * var(--fscale)); font-weight:700; letter-spacing:.14em;
-    color:var(--muted); text-transform:uppercase; margin-bottom:4px;
-  }
-  #sentence{
-    min-height:calc(46px * var(--bscale));
-    display:flex; flex-wrap:wrap; gap:8px; align-items:center;
-  }
-  #sentence .empty{color:var(--muted); font-size:calc(15px * var(--fscale));}
-  .chipword{
-    background:var(--chip); border:2px solid var(--line); border-radius:12px;
-    padding:calc(6px*var(--bscale)) calc(12px*var(--bscale));
-    font-size:calc(18px * var(--fscale) * var(--bscale)); font-weight:700;
-  }
-  .chipword.sel{border-color:var(--accent); background:var(--accent-soft);}
-  #chipCtl{display:none; gap:8px; margin-top:8px; flex-wrap:wrap;}
-  #chipCtl.show{display:flex;}
-  #chipCtl button{
-    font-size:calc(14px * var(--fscale)); font-weight:700; padding:8px 12px;
+  #setBtn{
+    margin-left:auto; font-weight:700; font-size:calc(14px * var(--fscale));
+    padding:7px 14px;
   }
 
-  /* ---------- 본문 ---------- */
-  #main{flex:1 1 auto; overflow-y:auto; padding:16px 14px 24px; -webkit-overflow-scrolling:touch;}
-  .view{display:none; max-width:860px; margin:0 auto;}
-  .view.active{display:block;}
-  .view-title{
-    font-family:var(--disp); font-size:calc(22px * var(--fscale));
-    margin-bottom:4px; display:flex; align-items:center; gap:10px;
-  }
-  .view-desc{color:var(--muted); font-size:calc(14px * var(--fscale)); margin-bottom:14px;}
-
-  /* 상시 이동 탭 — 어느 화면이든 한 번에 */
-  #navstrip{
-    flex:0 0 auto; display:flex; gap:8px; padding:8px 14px;
+  /* ---------- 탭 한 줄 ---------- */
+  #cats{
+    flex:0 0 auto; display:flex; gap:8px; padding:10px 14px;
     background:var(--surface); border-bottom:2px solid var(--line);
     overflow-x:auto; -webkit-overflow-scrolling:touch;
   }
-  #navstrip button{
-    flex:1 0 auto; font-weight:900; font-size:calc(15px * var(--fscale) * var(--bscale));
-    padding:calc(9px*var(--bscale)) calc(14px*var(--bscale)); border-radius:12px;
-    display:flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap;
+  #cats button{
+    flex:1 0 auto; font-weight:900; font-size:calc(16px * var(--fscale) * var(--bscale));
+    padding:calc(10px*var(--bscale)) calc(16px*var(--bscale)); border-radius:99px;
+    white-space:nowrap;
   }
-  #navstrip button[aria-selected="true"]{
+  #cats button[aria-selected="true"]{
     background:var(--accent); border-color:var(--accent); color:var(--accent-ink);
   }
-  #navstrip button.nav-help{border-color:var(--danger); background:var(--danger-soft);}
-  #navstrip button.nav-help[aria-selected="true"]{background:var(--danger); color:var(--danger-ink);}
 
-  /* 카테고리 탭 */
-  .tabs{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;}
-  .tab{
-    font-weight:700; font-size:calc(15px * var(--fscale));
-    padding:calc(8px*var(--bscale)) calc(14px*var(--bscale)); border-radius:99px;
+  /* ---------- 방금 말한 문장 ---------- */
+  #spoken{
+    flex:0 0 auto; display:none; align-items:center; gap:10px;
+    margin:10px 14px 0; padding:10px 14px;
+    background:var(--accent-soft); border:2px solid var(--accent); border-radius:14px;
   }
-  .tab[aria-selected="true"]{background:var(--accent); border-color:var(--accent); color:var(--accent-ink);}
+  #spoken.show{display:flex;}
+  #spoken .sp-t{
+    flex:1; font-weight:900; font-size:calc(17px * var(--fscale)); line-height:1.4;
+  }
+  #spoken button{font-weight:700; font-size:calc(14px * var(--fscale)); padding:8px 12px; white-space:nowrap;}
 
-  /* 표현·단어 격자 */
+  /* ---------- 본문 ---------- */
+  #main{flex:1 1 auto; overflow-y:auto; padding:14px 14px 20px; -webkit-overflow-scrolling:touch;}
+  .view{display:none; max-width:860px; margin:0 auto;}
+  .view.active{display:block;}
+  .view-desc{color:var(--muted); font-size:calc(14px * var(--fscale)); margin-bottom:12px;}
+  .backrow{margin-bottom:14px;}
+  .backrow button{font-weight:900; font-size:calc(16px * var(--fscale)); padding:12px 18px;}
+
+  /* 표현 격자 */
   .grid{
     display:grid; grid-template-columns:repeat(var(--cols),1fr);
     gap:calc(12px * var(--bscale));
   }
   .exp{
     display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
-    min-height:calc(88px * var(--bscale)); padding:calc(12px*var(--bscale)) 8px;
-    font-weight:700; font-size:calc(18px * var(--fscale) * var(--bscale));
+    min-height:calc(96px * var(--bscale)); padding:calc(14px*var(--bscale)) 8px;
+    font-weight:700; font-size:calc(19px * var(--fscale) * var(--bscale));
     line-height:1.35; text-align:center; position:relative; overflow:hidden;
     box-shadow:var(--shadow);
   }
-  .exp .ico{font-size:calc(30px * var(--bscale)); line-height:1;}
-  .exp .lock{
-    position:absolute; top:6px; right:8px; font-size:12px; color:var(--muted);
-  }
+  .exp .ico{font-size:calc(32px * var(--bscale)); line-height:1;}
   .exp.danger{border-color:var(--danger); background:var(--danger-soft);}
-  body.noemoji .exp .ico, body.noemoji .tile .ico{display:none;}
+  body.noemoji .exp .ico{display:none;}
   /* 누르기 유지(dwell) 진행 표시 */
   .exp.dwelling::after{
     content:""; position:absolute; left:0; bottom:0; height:7px; width:100%;
@@ -156,26 +121,46 @@
   }
   @keyframes dwfill{to{transform:scaleX(1);}}
 
-  .section-note{
-    border:2px solid var(--line); border-left:6px solid var(--accent);
-    background:var(--surface); border-radius:10px;
-    padding:12px 14px; margin:16px 0 0; font-size:calc(14px * var(--fscale));
+  /* ---------- 문장 만들기 ---------- */
+  #bSentence{
+    min-height:calc(58px * var(--bscale));
+    display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+    background:var(--surface); border:2px solid var(--line); border-radius:14px;
+    padding:10px 12px; margin-bottom:10px;
   }
-  .section-note.warn{border-left-color:var(--danger);}
+  #bSentence .empty{color:var(--muted); font-size:calc(14px * var(--fscale));}
+  .chipword{
+    background:var(--chip); border:2px solid var(--line); border-radius:12px;
+    padding:calc(7px*var(--bscale)) calc(13px*var(--bscale));
+    font-size:calc(18px * var(--fscale) * var(--bscale)); font-weight:700;
+  }
+  #bCtl{display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:10px; margin-bottom:14px;}
+  #bCtl button{
+    min-height:calc(56px * var(--bscale)); font-weight:900;
+    font-size:calc(16px * var(--fscale) * var(--bscale));
+  }
+  #bSpeak{background:var(--accent); border-color:var(--accent); color:var(--accent-ink);}
+  .tabs{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px;}
+  .tab{
+    font-weight:700; font-size:calc(15px * var(--fscale));
+    padding:calc(8px*var(--bscale)) calc(14px*var(--bscale)); border-radius:99px;
+  }
+  .tab[aria-selected="true"]{background:var(--accent); border-color:var(--accent); color:var(--accent-ink);}
 
-  /* ---------- 하단 동작바 ---------- */
-  #actionbar{
-    flex:0 0 auto; display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:10px;
-    padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+  /* ---------- 하단: 도움 요청 하나만 ---------- */
+  #helpbar{
+    flex:0 0 auto; padding:10px 14px calc(10px + env(safe-area-inset-bottom));
     background:var(--surface); border-top:2px solid var(--line);
   }
-  #actionbar button{
-    min-height:calc(58px * var(--bscale));
-    font-weight:900; font-size:calc(16px * var(--fscale) * var(--bscale));
-    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+  #helpBtn{
+    width:100%; min-height:calc(58px * var(--bscale));
+    background:var(--danger); border-color:var(--danger); color:var(--danger-ink);
+    font-weight:900; font-size:calc(18px * var(--fscale) * var(--bscale));
   }
-  #actionbar .ico{font-size:calc(20px * var(--bscale)); line-height:1;}
-  #btnSpeak{background:var(--accent); border-color:var(--accent); color:var(--accent-ink);}
+  #demoFoot{
+    flex:0 0 auto; text-align:center; font-size:calc(11px * var(--fscale));
+    color:var(--muted); background:var(--surface); padding:3px 8px 4px;
+  }
 
   /* ---------- 상대방 화면 ---------- */
   #partner{
@@ -274,15 +259,6 @@
     background:var(--chip);
   }
 
-  /* 소개 목록 */
-  .introbtn{
-    width:100%; text-align:left; font-weight:700;
-    font-size:calc(18px * var(--fscale) * var(--bscale));
-    padding:calc(14px*var(--bscale)) 16px; margin-bottom:10px;
-    display:flex; align-items:center; gap:12px; box-shadow:var(--shadow);
-  }
-  .introbtn .ico{font-size:calc(24px * var(--bscale));}
-
   /* 토스트 */
   #toast{
     position:fixed; left:50%; bottom:110px; transform:translateX(-50%);
@@ -292,80 +268,55 @@
     max-width:90vw; text-align:center;
   }
   #toast.show{opacity:1;}
-
-  #demoFoot{
-    flex:0 0 auto; text-align:center; font-size:calc(11px * var(--fscale));
-    color:var(--muted); background:var(--surface); padding:3px 8px 4px;
-    border-top:1px solid var(--line);
-  }
 </style>
 
 <header id="topbar">
   <div class="brand">말빛 <span class="demo-tag">시연판</span></div>
-  <button id="profileChip" title="설정에서 프로필을 바꿀 수 있습니다">👤 —</button>
+  <button id="setBtn">⚙️ 설정</button>
 </header>
 
-<div id="sentencebar">
-  <div class="sb-label">지금 만든 문장</div>
-  <div id="sentence" role="status" aria-live="polite"></div>
-  <div id="chipCtl">
-    <button id="ccPrev">◀ 앞으로 이동</button>
-    <button id="ccNext">뒤로 이동 ▶</button>
-    <button id="ccDel">✕ 이 단어 삭제</button>
-    <button id="ccClose">닫기</button>
-  </div>
+<nav id="cats" aria-label="표현 종류"></nav>
+
+<div id="spoken">
+  <span class="sp-t" role="status" aria-live="polite"></span>
+  <button id="spShow">👁️ 크게 보기</button>
 </div>
 
-<nav id="navstrip" aria-label="화면 이동">
-  <button data-nav="quick">🔘 빠른 표현</button>
-  <button data-nav="builder">🧩 문장 만들기</button>
-  <button data-nav="help" class="nav-help">🆘 도움 요청</button>
-  <button data-nav="intro">🙂 내 소개</button>
-  <button data-nav="settings">⚙️ 설정</button>
-</nav>
-
 <main id="main">
-  <!-- 빠른 표현 -->
+  <!-- 표현판 -->
   <section class="view" data-view="quick">
-    <p class="view-desc">버튼을 한 번 누르면 바로 음성으로 나갑니다. 확인 단계가 필요한 이용인은 설정에서 켤 수 있습니다.</p>
-    <div class="tabs" id="quickTabs" role="tablist"></div>
     <div class="grid kgrid" id="quickGrid"></div>
   </section>
 
   <!-- 문장 만들기 -->
   <section class="view" data-view="builder">
-    <p class="view-desc">단어를 순서대로 누르면 위 문장칸에 쌓입니다. 다 만든 뒤 아래 〈말하기〉를 누르세요.</p>
+    <div id="bSentence" aria-label="만드는 중인 문장"></div>
+    <div id="bCtl">
+      <button id="bSpeak">🔊 말하기</button>
+      <button id="bShow">👁️ 크게 보기</button>
+      <button id="bClear">🧹 지우기</button>
+    </div>
     <div class="tabs" id="bankTabs" role="tablist"></div>
     <div class="grid kgrid" id="bankGrid"></div>
+    <p class="view-desc" style="margin-top:12px;">단어를 누르면 문장에 붙고, 문장 속 단어를 누르면 빠집니다.</p>
   </section>
 
   <!-- 도움 요청 -->
   <section class="view" data-view="help">
-    <p class="view-desc">긴급 표현은 항상 한 번에 크게 표시되고 음성으로 나갑니다.</p>
+    <div class="backrow"><button id="helpBack">← 표현으로 돌아가기</button></div>
     <div class="grid kgrid" id="helpGrid"></div>
-    <div class="section-note warn">
-      긴급 표현은 일반 표현과 <b>화면을 분리</b>해 오작동을 줄이면서도 빠르게 쓸 수 있게 했습니다.
-    </div>
-  </section>
-
-  <!-- 내 소개 -->
-  <section class="view" data-view="intro">
-    <p class="view-desc">처음 만나는 분에게 나와 나의 의사소통 방법을 알립니다. 누르면 바로 음성으로 나갑니다.</p>
-    <div id="introList"></div>
   </section>
 
   <!-- 설정 -->
   <section class="view" data-view="settings">
-    <p class="view-desc">이용화면과 분리된 설정 화면입니다. 이용인마다 다르게 저장됩니다. 이 시연판은 제안서 10의 1·2단계 범위만 구현하며, 모든 프로필과 표현은 가상의 예시입니다.</p>
+    <div class="backrow"><button id="setBack">← 표현으로 돌아가기</button></div>
+    <p class="view-desc">이용인마다 다르게 저장됩니다. 이 시연판은 제안서 10의 1·2단계 범위만 구현하며, 모든 프로필과 표현은 가상의 예시입니다.</p>
     <div id="settingsBody"></div>
   </section>
 </main>
 
-<footer id="actionbar">
-  <button id="btnSpeak"><span class="ico">🔊</span>말하기</button>
-  <button id="btnShow"><span class="ico">👁️</span>크게 보기</button>
-  <button id="btnUndo"><span class="ico">↩️</span>한 단계 취소</button>
-  <button id="btnClear"><span class="ico">🧹</span>지우기</button>
+<footer id="helpbar">
+  <button id="helpBtn">🆘 도움 요청</button>
 </footer>
 <div id="demoFoot">시연판 · 모든 프로필과 표현은 가상의 예시입니다 · 개인정보를 입력하지 마세요</div>
 
@@ -406,58 +357,44 @@
    ========================================================= */
 // 특별한 이유 없이 삭제하거나 숨기지 않는 표현 (표현권 보장)
 const LOCKED = [
-  '아니요','싫어요','그만해주세요','지금 중단해주세요','운동을 중단하고 싶어요',
-  '도와주세요','도움이 필요해요','제가 직접 선택하겠습니다',
-  '다른 사람과 이야기하고 싶어요','혼자 있고 싶어요','잘못 이해하셨어요'
+  '아니요','싫어요','중단하고 싶어요','지금 중단해주세요','도와주세요',
+  '제가 직접 선택하겠습니다','혼자 있고 싶어요','잘못 이해하셨어요'
 ];
-const LOCKSET = new Set(LOCKED);
 
-const QUICK = [
-  {id:'basic', name:'기본응답', items:[
-    ['예','🙆'],['아니요','🙅'],['잘 모르겠어요','🤔'],['다시 물어봐주세요','🔁'],
-    ['제가 직접 선택하겠습니다','☝️'],['잘못 이해하셨어요','❗']
+const BOARDS = [
+  {id:'basic', name:'기본', items:[
+    ['예','🙆'],['아니요','🙅'],['좋아요','😊'],['싫어요','😖'],
+    ['잘 모르겠어요','🤔'],['다시 말해주세요','🔁']
   ]},
-  {id:'feel', name:'감정·선호', items:[
-    ['좋아요','😊'],['싫어요','😖'],['즐거워요','😄'],['불안해요','😟'],
-    ['혼자 있고 싶어요','🚪'],['다른 사람과 이야기하고 싶어요','👥']
+  {id:'life', name:'생활', items:[
+    ['물 주세요','💧'],['식사하고 싶어요','🍚'],['화장실 가고 싶어요','🚻'],
+    ['쉬고 싶어요','🛋️'],['더워요','🥵'],['추워요','🥶']
   ]},
-  {id:'daily', name:'일상생활', items:[
-    ['물이 필요해요','💧'],['식사하고 싶어요','🍚'],['화장실에 가고 싶어요','🚻'],
-    ['잠시 쉬고 싶어요','🛋️'],['덥습니다','🥵'],['춥습니다','🥶'],
-    ['커피 마시고 싶어요','☕'],['신문 가져다 주세요','📰']
+  {id:'act', name:'활동', items:[
+    ['참여하고 싶어요','🙋'],['오늘은 쉬고 싶어요','🙇'],['시작할게요','▶️'],
+    ['중단하고 싶어요','✋'],['천천히 해주세요','🐢'],['담당자를 불러주세요','📣']
   ]},
-  {id:'prog', name:'프로그램', items:[
-    ['프로그램에 참여하고 싶어요','🙋'],['오늘은 참여하고 싶지 않아요','🙇'],
-    ['다른 활동을 하고 싶어요','🔄'],['설명을 천천히 다시 해주세요','🐢'],
-    ['잠시 쉬었다 할게요','⏸️']
-  ]},
-  {id:'gym', name:'헬스장', items:[
-    ['운동을 시작할게요','🏃'],['운동을 계속하고 싶어요','▶️'],
-    ['운동을 중단하고 싶어요','⏹️'],['강도를 낮춰주세요','⬇️'],
-    ['강도를 높여도 좋아요','⬆️'],['어깨가 아파요','💪']
-  ]},
-  {id:'mine', name:'내 표현', items:[]} // 프로필별 맞춤 표현이 이 자리에 표시됨
+  {id:'mine', name:'내 표현', items:[]} // 프로필의 소개 문장 + 맞춤 표현
 ];
 
 const HELP_ITEMS = [
-  ['도와주세요','🆘'],['아파요','🤕'],['불편해요','😣'],['숨이 차요','😮‍💨'],
-  ['어지러워요','💫'],['천천히 해주세요','🐢'],['지금 중단해주세요','✋'],['담당자를 불러주세요','📣']
+  ['도와주세요','🆘'],['아파요','🤕'],['숨이 차요','😮‍💨'],
+  ['어지러워요','💫'],['지금 중단해주세요','✋'],['담당자를 불러주세요','📣']
 ];
 
 const BANK = [
-  {id:'who', name:'누가', items:[['저는','🙂'],['우리','👥'],['선생님이','🧑‍🏫'],['가족이','👨‍👩‍👧']]},
-  {id:'when', name:'언제', items:[['지금','⏰'],['오늘','📅'],['이따가','🕒'],['내일','🌅']]},
+  {id:'who', name:'누가', items:[['저는','🙂'],['우리','👥'],['선생님이','🧑‍🏫']]},
+  {id:'when', name:'언제', items:[['지금','⏰'],['오늘','📅'],['이따가','🕒']]},
   {id:'where', name:'어디', items:[
-    ['집에','🏠'],['화장실에','🚻'],['헬스장에','🏋️'],['프로그램실에','🎨'],['식당에','🍽️'],['밖에','🌳']
+    ['집에','🏠'],['화장실에','🚻'],['헬스장에','🏋️'],['프로그램실에','🎨']
   ]},
-  {id:'act', name:'행동·요청', items:[
-    ['가고 싶어요','➡️'],['하고 싶어요','✨'],['먹고 싶어요','🍚'],['마시고 싶어요','🥤'],
-    ['쉬고 싶어요','🛋️'],['보고 싶어요','👀'],['도와주세요','🆘'],['그만하고 싶어요','✋'],['다시 해주세요','🔁']
+  {id:'act', name:'행동', items:[
+    ['가고 싶어요','➡️'],['하고 싶어요','✨'],['먹고 싶어요','🍚'],
+    ['쉬고 싶어요','🛋️'],['도와주세요','🆘'],['그만하고 싶어요','✋']
   ]},
-  {id:'state', name:'마음·상태', items:[
-    ['좋아요','😊'],['싫어요','😖'],['아파요','🤕'],['힘들어요','😥'],['즐거워요','😄'],['괜찮아요','👌']
-  ]},
-  {id:'deg', name:'정도', items:[['조금','🤏'],['많이','🙌'],['천천히','🐢'],['빨리','⚡']]}
+  {id:'state', name:'마음', items:[
+    ['좋아요','😊'],['싫어요','😖'],['아파요','🤕'],['힘들어요','😥']
+  ]}
 ];
 
 /* =========================================================
@@ -465,7 +402,7 @@ const BANK = [
    ========================================================= */
 function defaultSettings(){
   // 기본값은 '한 번 누르면 바로 말하기'. 확인 단계·자동 크게 보기는 필요한 이용인만 켠다.
-  return {cols:3, btnScale:1, fontScale:1, contrast:false, showEmoji:true,
+  return {cols:2, btnScale:1, fontScale:1, contrast:false, showEmoji:true,
           confirm:false, bigAfter:false, dwellMs:0, scan:false, scanMs:1800, rate:1, volume:1};
 }
 function defaultProfiles(){
@@ -473,7 +410,7 @@ function defaultProfiles(){
     { id:'a', icon:'🌷', name:'가상 이용인 A',
       desc:'손떨림이 있어 아주 큰 버튼·고대비·확인단계·누르기 유지가 필요한 예시',
       settings:Object.assign(defaultSettings(),
-        {cols:2, btnScale:1.35, fontScale:1.15, contrast:true, confirm:true, bigAfter:true, dwellMs:600, rate:0.85}),
+        {btnScale:1.35, fontScale:1.15, contrast:true, confirm:true, bigAfter:true, dwellMs:600, rate:0.85}),
       custom:[
         {t:'서예 프로그램에 가고 싶어요', e:'🖌️'},
         {t:'라디오를 켜 주세요', e:'📻'},
@@ -482,22 +419,19 @@ function defaultProfiles(){
       intro:[
         '안녕하세요, 저는 가상 이용인 A입니다.',
         '저는 화면의 버튼을 눌러 대화합니다.',
-        '손이 떨려서 누르는 데 시간이 걸립니다. 기다려 주세요.',
-        '제가 문장을 확정한 뒤에 들어 주세요.'
+        '손이 떨려서 누르는 데 시간이 걸립니다. 기다려 주세요.'
       ],
       guide:'버튼을 누르는 데 시간이 걸립니다. 문장을 확정할 때까지 기다려 주세요.' },
     { id:'b', icon:'🌊', name:'가상 이용인 B',
       desc:'직접 누르기가 어려워 키보드 스캔 방식으로 선택하는 예시',
-      settings:Object.assign(defaultSettings(),
-        {cols:3, btnScale:1.15, confirm:false, scan:true, scanMs:1800}),
+      settings:Object.assign(defaultSettings(), {scan:true, scanMs:1800}),
       custom:[
         {t:'음악 프로그램이 좋아요', e:'🎵'},
         {t:'창가 자리에 앉고 싶어요', e:'🪟'}
       ],
       intro:[
         '안녕하세요, 저는 가상 이용인 B입니다.',
-        '화면의 항목이 차례로 반짝이면, 제가 원하는 순간에 확인키를 누릅니다.',
-        '조금 느려도 제 말을 끝까지 들어 주세요.'
+        '화면의 항목이 차례로 반짝이면, 제가 원하는 순간에 확인키를 누릅니다.'
       ],
       guide:'항목이 차례로 강조됩니다. 제가 확인키를 누를 때까지 기다려 주세요.' },
     { id:'c', icon:'🌱', name:'가상 이용인 C',
@@ -515,14 +449,13 @@ function defaultProfiles(){
 /* =========================================================
    상태
    ========================================================= */
-const STORE_KEY = 'malbit-demo-v2';
+const STORE_KEY = 'malbit-demo-v3';
 let state = load();
-let sentence = [];          // 현재 문장 (단어 배열)
-let history = [];           // 한 단계 취소용
-let selChip = -1;           // 선택된 문장칸 단어
-let curView = 'quick';
-let quickCat = 'basic';
+let words = [];             // 문장 만들기의 단어들
+let curView = 'quick';      // quick | builder | help | settings
+let curCat = 'basic';
 let bankCat = 'who';
+let lastSpoken = '';
 let modalCb = null;
 
 function load(){
@@ -638,7 +571,7 @@ function scanStop(){
 function scanRoot(){
   if($('#modal').classList.contains('open')) return $('#modal');
   if($('#partner').classList.contains('open')) return $('#partner');
-  return null; // 기본: 본문 + 상·하단바
+  return null;
 }
 function scanRefresh(){
   scanStop();
@@ -648,7 +581,8 @@ function scanRefresh(){
   if(root){
     btns = [...root.querySelectorAll('button')];
   }else{
-    btns = [...document.querySelectorAll('#main .view.active button, #actionbar button, #navstrip button, #topbar button, #sentencebar button')];
+    btns = [...document.querySelectorAll(
+      '#main .view.active button, #cats button, #topbar button, #helpbar button, #spoken button')];
   }
   scan.list = btns.filter(b=>b.offsetParent !== null && !b.disabled);
   if(!scan.list.length) return;
@@ -693,57 +627,7 @@ document.addEventListener('keydown', e=>{
 });
 
 /* =========================================================
-   문장 상태
-   ========================================================= */
-function sentenceText(){ return sentence.join(' '); }
-function pushHist(){ history.push(sentence.slice()); if(history.length > 40) history.shift(); }
-function renderSentence(){
-  const box = $('#sentence');
-  box.innerHTML = '';
-  if(!sentence.length){
-    box.appendChild(el('span','empty','아래에서 표현이나 단어를 선택하세요'));
-  }else{
-    sentence.forEach((w,i)=>{
-      const c = el('button','chipword' + (i===selChip?' sel':''), escapeHtml(w));
-      c.addEventListener('click', ()=>{ selChip = (selChip===i ? -1 : i); renderSentence(); });
-      box.appendChild(c);
-    });
-  }
-  $('#chipCtl').classList.toggle('show', selChip >= 0 && selChip < sentence.length);
-  scanRefresh();
-}
-function setSentence(words){
-  pushHist(); sentence = words.slice(); selChip = -1; renderSentence();
-}
-function appendWord(w){
-  pushHist(); sentence.push(w); selChip = -1; renderSentence();
-}
-function undo(){
-  if(!history.length){ toast('되돌릴 단계가 없습니다'); return; }
-  sentence = history.pop(); selChip = -1; renderSentence();
-}
-function clearSentence(){
-  if(!sentence.length) return;
-  pushHist(); sentence = []; selChip = -1; renderSentence();
-}
-/* 문장칸 단어 편집 */
-$('#ccPrev').addEventListener('click', ()=>{
-  if(selChip > 0){ pushHist();
-    [sentence[selChip-1], sentence[selChip]] = [sentence[selChip], sentence[selChip-1]];
-    selChip--; renderSentence(); }
-});
-$('#ccNext').addEventListener('click', ()=>{
-  if(selChip >= 0 && selChip < sentence.length-1){ pushHist();
-    [sentence[selChip+1], sentence[selChip]] = [sentence[selChip], sentence[selChip+1]];
-    selChip++; renderSentence(); }
-});
-$('#ccDel').addEventListener('click', ()=>{
-  if(selChip >= 0){ pushHist(); sentence.splice(selChip,1); selChip = -1; renderSentence(); }
-});
-$('#ccClose').addEventListener('click', ()=>{ selChip = -1; renderSentence(); });
-
-/* =========================================================
-   말하기 흐름: 확인 → 음성 → 상대방 화면
+   말하기 흐름: (확인) → 음성 → 필요할 때만 크게
    ========================================================= */
 function openModal(text, cb, opts){
   opts = opts || {};
@@ -762,9 +646,7 @@ function closeModal(){
 $('#mOk').addEventListener('click', ()=>{ const cb = modalCb; closeModal(); if(cb) cb(); });
 $('#mCancel').addEventListener('click', closeModal);
 
-let partnerText = '';
 function openPartner(text, emergency){
-  partnerText = text;
   $('#pText').textContent = text;
   $('#pGuide').textContent = P().guide || '';
   $('#partner').classList.toggle('em', !!emergency);
@@ -775,48 +657,37 @@ function closePartner(){
   $('#partner').classList.remove('open'); scanRefresh();
 }
 $('#pClose').addEventListener('click', closePartner);
-$('#pReplay').addEventListener('click', ()=>speak(partnerText));
+$('#pReplay').addEventListener('click', ()=>speak(lastSpoken));
 $('#pWait').addEventListener('click', ()=>speak('잠시 기다려주세요.'));
 $('#pYes').addEventListener('click', ()=>speak('맞아요. 제 말이 맞아요.'));
 $('#pEdit').addEventListener('click', ()=>{ speak('수정할게요.'); closePartner(); });
 
-// 기본: 말하기만. 자동 크게 보기는 설정에서 켠 이용인만, 긴급은 항상 크게.
+function renderSpoken(){
+  const box = $('#spoken');
+  const showable = lastSpoken && (curView === 'quick' || curView === 'builder');
+  box.classList.toggle('show', !!showable);
+  if(showable) box.querySelector('.sp-t').textContent = '🗨️ ' + lastSpoken;
+}
 function speakOut(text, emergency){
+  lastSpoken = text;
   speak(text);
+  renderSpoken();
   if(emergency || S().bigAfter) openPartner(text, emergency);
+  scanRefresh();
 }
-function requestSpeak(){
-  const t = sentenceText();
-  if(!t){ toast('먼저 표현이나 단어를 선택해 주세요'); return; }
-  if(S().confirm) openModal(t, ()=>speakOut(t));
-  else speakOut(t);
-}
-// 빠른 표현: 원클릭 — 누르면 바로 출력 (확인 단계는 켠 경우에만)
+// 표현 버튼: 원클릭 — 누르면 바로 출력 (확인 단계는 켠 경우에만)
 function selectExpression(text){
-  setSentence([text]);
   if(S().confirm) openModal(text, ()=>speakOut(text));
   else speakOut(text);
 }
-// 긴급 표현: 확인 없이 즉시 출력 + 상대방 화면
+// 긴급 표현: 항상 즉시 음성 + 상대방 화면
 function selectEmergency(text){
-  setSentence([text]);
+  lastSpoken = text;
   speak(text);
+  renderSpoken();
   openPartner(text, true);
 }
-
-/* 하단 동작바 */
-$('#btnSpeak')._act = requestSpeak; $('#btnSpeak').dataset.sel='1';
-$('#btnShow').addEventListener('click', ()=>{
-  const t = sentenceText();
-  if(!t){ toast('먼저 표현이나 단어를 선택해 주세요'); return; }
-  openPartner(t, false);
-});
-$('#btnUndo').addEventListener('click', undo);
-$('#btnClear').addEventListener('click', clearSentence);
-$('#profileChip').addEventListener('click', ()=>go('settings'));
-document.querySelectorAll('#navstrip button').forEach(b=>{
-  b.addEventListener('click', ()=>go(b.dataset.nav));
-});
+$('#spShow').addEventListener('click', ()=>{ if(lastSpoken) openPartner(lastSpoken, false); });
 
 /* =========================================================
    화면 전환·렌더링
@@ -824,49 +695,46 @@ document.querySelectorAll('#navstrip button').forEach(b=>{
 function go(view){
   curView = view;
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active', v.dataset.view === view));
-  document.querySelectorAll('#navstrip button').forEach(b=>
-    b.setAttribute('aria-selected', b.dataset.nav === view ? 'true' : 'false'));
+  const inBoard = view === 'quick' || view === 'builder';
+  $('#cats').style.display = inBoard ? 'flex' : 'none';
+  $('#helpbar').style.display = view === 'help' || view === 'settings' ? 'none' : 'block';
+  renderCats();
   if(view === 'quick') renderQuick();
-  if(view === 'builder') renderBank();
+  if(view === 'builder') renderBuilder();
   if(view === 'help') renderHelp();
-  if(view === 'intro') renderIntro();
   if(view === 'settings') renderSettings();
+  renderSpoken();
   $('#main').scrollTop = 0;
   scanRefresh();
 }
-
-function renderTabs(host, cats, cur, onPick){
-  host.innerHTML = '';
-  cats.forEach(c=>{
-    const b = el('button','tab', escapeHtml(c.name));
-    b.setAttribute('role','tab');
-    b.setAttribute('aria-selected', c.id === cur ? 'true' : 'false');
-    b.addEventListener('click', ()=>onPick(c.id));
-    host.appendChild(b);
+function renderCats(){
+  const host = $('#cats'); host.innerHTML = '';
+  BOARDS.forEach(b=>{
+    const btn = el('button', null, escapeHtml(b.name));
+    btn.setAttribute('aria-selected', (curView === 'quick' && curCat === b.id) ? 'true' : 'false');
+    btn.addEventListener('click', ()=>{ curCat = b.id; go('quick'); });
+    host.appendChild(btn);
   });
+  const bb = el('button', null, '🧩 문장');
+  bb.setAttribute('aria-selected', curView === 'builder' ? 'true' : 'false');
+  bb.addEventListener('click', ()=>go('builder'));
+  host.appendChild(bb);
 }
 function expBtn(text, emoji, act, extraCls){
-  const lock = LOCKSET.has(text) ? '<span class="lock" title="표현권 보장으로 항상 제공되는 표현">🔒</span>' : '';
   return makeSelBtn('exp ' + (extraCls||''),
-    `${lock}<span class="ico">${emoji||'💬'}</span><span>${escapeHtml(text)}</span>`, act);
+    `<span class="ico">${emoji||'💬'}</span><span>${escapeHtml(text)}</span>`, act);
 }
 function renderQuick(){
-  renderTabs($('#quickTabs'), QUICK, quickCat, id=>{ quickCat = id; renderQuick(); });
   const g = $('#quickGrid'); g.innerHTML = '';
-  const cat = QUICK.find(c=>c.id === quickCat);
-  let items = cat.items;
-  if(cat.id === 'mine') items = P().custom.map(c=>[c.t, c.e]);
-  if(!items.length){
-    g.appendChild(el('p','view-desc','아직 등록된 내 표현이 없습니다. 설정 → 표현 관리에서 추가할 수 있습니다.'));
+  const board = BOARDS.find(b=>b.id === curCat);
+  let items = board.items;
+  if(board.id === 'mine'){
+    items = P().intro.map(t=>[t,'💬']).concat(P().custom.map(c=>[c.t, c.e]));
+    if(!items.length){
+      g.appendChild(el('p','view-desc','아직 등록된 내 표현이 없습니다. 설정에서 추가할 수 있습니다.'));
+    }
   }
   items.forEach(([t,e])=>g.appendChild(expBtn(t, e, ()=>selectExpression(t))));
-  scanRefresh();
-}
-function renderBank(){
-  renderTabs($('#bankTabs'), BANK, bankCat, id=>{ bankCat = id; renderBank(); });
-  const g = $('#bankGrid'); g.innerHTML = '';
-  const cat = BANK.find(c=>c.id === bankCat);
-  cat.items.forEach(([t,e])=>g.appendChild(expBtn(t, e, ()=>appendWord(t))));
   scanRefresh();
 }
 function renderHelp(){
@@ -874,15 +742,57 @@ function renderHelp(){
   HELP_ITEMS.forEach(([t,e])=>g.appendChild(expBtn(t, e, ()=>selectEmergency(t), 'danger')));
   scanRefresh();
 }
-function renderIntro(){
-  const host = $('#introList'); host.innerHTML = '';
-  P().intro.forEach(t=>{
-    const b = makeSelBtn('introbtn', `<span class="ico">💬</span><span>${escapeHtml(t)}</span>`,
-      ()=>{ setSentence([t]); speakOut(t); });
-    host.appendChild(b);
-  });
+
+/* ---------- 문장 만들기 ---------- */
+function renderWords(){
+  const box = $('#bSentence'); box.innerHTML = '';
+  if(!words.length){
+    box.appendChild(el('span','empty','아래 단어를 눌러 문장을 만드세요'));
+  }else{
+    words.forEach((w,i)=>{
+      const c = el('button','chipword', escapeHtml(w));
+      c.title = '누르면 이 단어가 빠집니다';
+      c.addEventListener('click', ()=>{ words.splice(i,1); renderWords(); });
+      box.appendChild(c);
+    });
+  }
   scanRefresh();
 }
+function renderBuilder(){
+  renderWords();
+  const host = $('#bankTabs'); host.innerHTML = '';
+  BANK.forEach(c=>{
+    const b = el('button','tab', escapeHtml(c.name));
+    b.setAttribute('role','tab');
+    b.setAttribute('aria-selected', c.id === bankCat ? 'true' : 'false');
+    b.addEventListener('click', ()=>{ bankCat = c.id; renderBuilder(); });
+    host.appendChild(b);
+  });
+  const g = $('#bankGrid'); g.innerHTML = '';
+  const cat = BANK.find(c=>c.id === bankCat);
+  cat.items.forEach(([t,e])=>g.appendChild(expBtn(t, e, ()=>{ words.push(t); renderWords(); })));
+  scanRefresh();
+}
+$('#bSpeak')._act = ()=>{
+  const t = words.join(' ');
+  if(!t){ toast('먼저 단어를 선택해 주세요'); return; }
+  if(S().confirm) openModal(t, ()=>speakOut(t));
+  else speakOut(t);
+};
+$('#bSpeak').dataset.sel = '1';
+$('#bShow').addEventListener('click', ()=>{
+  const t = words.join(' ') || lastSpoken;
+  if(!t){ toast('먼저 단어를 선택해 주세요'); return; }
+  openPartner(t, false);
+});
+$('#bClear').addEventListener('click', ()=>{ words = []; renderWords(); });
+
+/* ---------- 상단·하단 ---------- */
+$('#setBtn').addEventListener('click', ()=>go('settings'));
+$('#setBack').addEventListener('click', ()=>go('quick'));
+$('#helpBtn')._act = ()=>go('help');
+$('#helpBtn').dataset.sel = '1';
+$('#helpBack').addEventListener('click', ()=>go('quick'));
 
 /* =========================================================
    설정 화면
@@ -895,7 +805,6 @@ function applySettings(){
   r.setProperty('--fscale', s.fontScale);
   document.body.classList.toggle('hc', !!s.contrast);
   document.body.classList.toggle('noemoji', !s.showEmoji);
-  $('#profileChip').textContent = '👤 ' + P().name;
   scanRefresh();
 }
 function seg(host, options, isOn, onPick){
@@ -939,7 +848,7 @@ function renderSettings(){
   /* 2. 표현 관리 */
   const c2 = el('div','set-card');
   c2.appendChild(el('h3',null,'표현 관리 — 내 표현'));
-  c2.appendChild(el('div','h-desc','이 프로필의 〈빠른 표현 → 내 표현〉에 표시됩니다. 가상의 예시 표현만 넣어 주세요.'));
+  c2.appendChild(el('div','h-desc','이 프로필의 〈내 표현〉에 표시됩니다. 가상의 예시 표현만 넣어 주세요.'));
   const form = el('div','set-row');
   const inT = el('input'); inT.type='text'; inT.placeholder='표현 문장 (예: 산책하러 가고 싶어요)'; inT.style.flex='1'; inT.style.minWidth='180px';
   const inE = el('input'); inE.type='text'; inE.placeholder='그림(이모지)'; inE.style.width='110px';
@@ -978,8 +887,7 @@ function renderSettings(){
   /* 3. 화면 */
   const c3 = el('div','set-card');
   c3.appendChild(el('h3',null,'화면'));
-  c3.appendChild(el('div','h-desc','버튼 수·크기·대비를 이용인에게 맞춥니다.'));
-  seg(row(c3,'한 줄의 버튼 수'), [['2개',2],['3개',3],['4개',4]], v=>s.cols===v, v=>{s.cols=v;});
+  seg(row(c3,'한 줄의 버튼 수'), [['2개',2],['3개',3]], v=>s.cols===v, v=>{s.cols=v;});
   seg(row(c3,'버튼 크기'), [['보통',1],['크게',1.2],['아주 크게',1.4]], v=>s.btnScale===v, v=>{s.btnScale=v;});
   seg(row(c3,'글자 크기'), [['보통',1],['크게',1.15],['아주 크게',1.3]], v=>s.fontScale===v, v=>{s.fontScale=v;});
   seg(row(c3,'고대비 화면'), [['끔',false],['켬',true]], v=>s.contrast===v, v=>{s.contrast=v;});
@@ -1043,8 +951,8 @@ function renderSettings(){
     openModal('저장된 모든 프로필·표현·설정을 지우고 처음 상태로 되돌릴까요?', ()=>{
       try{ localStorage.removeItem(STORE_KEY); }catch(e){}
       state = {profiles:defaultProfiles(), cur:'c'};
-      sentence = []; history = []; selChip = -1;
-      save(); applySettings(); renderSentence(); renderSettings();
+      words = []; lastSpoken = '';
+      save(); applySettings(); renderSpoken(); renderSettings();
       toast('처음 상태로 되돌렸습니다');
     }, {title:'모든 개인설정 삭제', ok:'네, 모두 삭제할게요', warn:true});
   });
@@ -1058,7 +966,6 @@ function renderSettings(){
 /* =========================================================
    시작
    ========================================================= */
-renderSentence();
 applySettings();
 go('quick');
 </script>
