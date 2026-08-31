@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#123524" />
+  <meta name="description" content="말빛 — 뇌병변장애인을 위한 개인맞춤형 의사소통(AAC) 웹앱. 큰 버튼을 한 번 눌러 의사를 문장과 음성으로 표현합니다." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="말빛" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <title>말빛 — 의사소통 도우미</title>
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <noscript>
+    <div style="padding:2rem;font-size:1.2rem;">말빛을 사용하려면 자바스크립트를 켜 주세요.</div>
+  </noscript>
+
+  <div id="app">
+    <!-- 프로필 선택 · 생성 -->
+    <section id="screen-profiles" class="screen" hidden></section>
+
+    <!-- 메인 표현판 -->
+    <section id="screen-main" class="screen" hidden>
+      <header class="app-header">
+        <div class="brand">
+          <span class="brand-name">말빛</span>
+          <button id="btn-profile" class="chip" type="button" aria-label="프로필 바꾸기"></button>
+        </div>
+        <button id="btn-settings" class="icon-btn" type="button" aria-label="설정 열기">⚙️ 설정</button>
+      </header>
+      <nav id="tabs" class="tabs" aria-label="표현판 선택"></nav>
+      <main id="board" class="board" aria-live="polite"></main>
+      <div class="emergency-bar">
+        <button id="btn-emergency" class="emergency-btn" type="button">🆘 도움 요청</button>
+      </div>
+    </section>
+
+    <!-- 긴급 표현판 -->
+    <section id="screen-emergency" class="screen emergency-screen" hidden>
+      <header class="app-header">
+        <button id="btn-emergency-back" class="back-btn" type="button">← 표현으로 돌아가기</button>
+      </header>
+      <p class="emergency-note">이미 〈도와주세요〉 소리가 나갔습니다. 아래 버튼은 알림음과 함께 항상 최대 음량으로 나갑니다.</p>
+      <main id="emergency-board" class="board"></main>
+    </section>
+
+    <!-- 상대방에게 보여주는 화면 -->
+    <section id="screen-display" class="screen display-screen" hidden>
+      <header class="display-header">
+        <span id="display-label" class="display-title">상대방에게 보여주는 화면</span>
+        <button id="btn-display-close" class="icon-btn" type="button" aria-label="닫기">✕ 닫기</button>
+      </header>
+      <div class="display-body">
+        <p id="display-text" class="display-text"></p>
+      </div>
+      <p class="display-guide">화면의 문장이 제 말입니다. 그대로 읽어 주세요.</p>
+      <div id="display-actions" class="display-actions"></div>
+    </section>
+
+    <!-- 설정 -->
+    <section id="screen-settings" class="screen settings-screen" hidden></section>
+
+    <!-- 선택 후 확인 -->
+    <div id="confirm-modal" class="modal-backdrop" hidden>
+      <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="confirm-question">
+        <p id="confirm-question" class="confirm-question">이 문장이 맞습니까?</p>
+        <p id="confirm-text" class="confirm-text"></p>
+        <div class="confirm-actions">
+          <button id="btn-confirm-yes" class="confirm-yes" type="button" data-scan data-guard-key="confirm-yes">네, 말할게요</button>
+          <button id="btn-confirm-no" class="confirm-no" type="button" data-scan data-guard-key="confirm-no">아니요, 취소</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 짧은 알림 -->
+    <div id="toast" class="toast" hidden></div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
